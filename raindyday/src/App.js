@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { Navbar, Nav } from 'react-bootstrap'
+import Home from './pages/home'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+function TopNav() {
+    return (
+        <Navbar bg="light" expand="lg">
+            <Navbar.Brand href="/">Welcome_Beemo</Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="ml-auto">
+                    <Nav.Link href="#link">Sign in</Nav.Link>
+                </Nav>
+            </Navbar.Collapse>
+        </Navbar>
+    )
 }
 
-export default App;
+function App() {
+    return (
+        <>
+            <TopNav />
+            <Router>
+                <Switch>
+                    {/* this will probably have some 404 issues later... */}
+                    <Route path="/">
+                        <Home />
+                    </Route>
+                </Switch>
+            </Router>
+        </>
+    )
+}
+
+export default App
