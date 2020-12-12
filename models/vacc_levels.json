@@ -1,0 +1,14 @@
+{
+    "fixed_cost_mo": 10000,
+    "var_cost_mo": 0.4,
+    "norm_rev": 15000,
+    "curr_rev": 10000,
+    "vacc_levels": [
+        10,
+        20,
+        30,
+        40,
+        50,
+        60
+    ]
+}
