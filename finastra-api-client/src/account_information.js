@@ -5,11 +5,20 @@ const validate_params = require('./helpers/validate_params')
 // https://developer.fusionfabric.cloud/api/corporate-accounteinfo-me-v1-831cb09d-cc10-4772-8ed5-8a6b72ec8e01/docs
 module.exports = (instance) => {
     const url = endpoints.accounts_url
+
     // This API returns a list of accounts for the authenticated corporate user
-    async function get_accounts_information() {
+    async function get_accounts_information(options) {
+        // accountContext must be
+        // VIEW-ACCOUNT, INTERNAL-TRANSFER, THIRD-PARTY-TRANSFER,
+        // DOMESTIC-TRANSFER, or MT103
+        const required_params = ['accountContext']
+        const allowed_params = ['limit', 'offset']
+
+        validate_params(required_params, allowed_params, options)
+
         const uri = '/accounts'
 
-        const account_res = await instance.get(url + uri)
+        const account_res = await instance.get(url + uri, { params: options })
 
         return account_res
     }

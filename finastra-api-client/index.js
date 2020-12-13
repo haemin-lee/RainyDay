@@ -11,7 +11,7 @@ async function get_token(code, options) {
 
 // Returns an API instance for OAuth2 auth with FusionFabric.cloud
 // Inspired by code from https://github.com/Schmavery/facebook-chat-api/blob/master/index.js
-async function get_client(access_token) {
+function get_client(access_token) {
     const instance = axios.create({
         timeout: 4000,
         headers: {

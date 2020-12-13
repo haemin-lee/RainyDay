@@ -23,7 +23,7 @@ if (config.NODE_ENV === 'production') {
     })
 } else {
     app.get('/', (req, res) => {
-        res.json({ message: 'hello world!' })
+        return res.json({ message: 'hello world!' })
     })
 }
 
