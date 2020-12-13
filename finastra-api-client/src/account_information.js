@@ -1,4 +1,4 @@
-const endpoints = require('endpoint')
+const endpoints = require('./endpoint')
 const validate_params = require('./helpers/validate_params')
 
 // Implements the Finastra Accounts and Balances API
@@ -11,8 +11,6 @@ module.exports = (instance) => {
 
         const account_res = await instance.get(url + uri)
 
-        if (!account_res.ok) throw account_res
-
         return account_res
     }
 
@@ -21,8 +19,6 @@ module.exports = (instance) => {
         const uri = `/accounts/${account_id}`
 
         const account_res = await instance.get(url + uri)
-
-        if (!account_res.ok) throw account_res
 
         return account_res
     }
@@ -40,8 +36,6 @@ module.exports = (instance) => {
         const statement_res = await instance.get(url + uri, {
             params: options,
         })
-
-        if (!statement_res.ok) throw statement_res
 
         return statement_res
     }
@@ -64,8 +58,6 @@ module.exports = (instance) => {
             params: options,
         })
 
-        if (!balances_res.ok) throw balances_res
-
         return balances_res
     }
 
@@ -74,8 +66,6 @@ module.exports = (instance) => {
         const uri = `/accounts/${account_id}/balances`
 
         const balance_res = await instance.get(url + uri)
-
-        if (!balance_res.ok) throw balance_res
 
         return balance_res
     }
