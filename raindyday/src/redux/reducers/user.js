@@ -7,7 +7,7 @@ export default function reducer(state = initial_state, action) {
         case SET_USER:
             return { ...state, ...action.payload }
         case LOGOUT_USER:
-            return { ...state, ...initial_state }
+            return { ...initial_state }
         default:
             return state
     }

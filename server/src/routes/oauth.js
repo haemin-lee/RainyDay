@@ -6,8 +6,6 @@ import {
     get_auth_uri,
 } from 'finastra-api-server'
 
-import { get_client } from 'finastra-api-client'
-
 import config from '@app/config'
 
 const oauth = get_oauth2_client(
@@ -41,22 +39,8 @@ router.get('/token', async (req, res) => {
         redirect_uri: config.redirect_uri,
     })
 
-    try {
-        const access_token = await get_token(oauth, token_options)
-        const client = get_client(access_token.token.access_token)
-        const options = {
-            accountContext: 'VIEW-ACCOUNT',
-        }
-        const info = await client.account_information.get_accounts_information(
-            options
-        )
-        const data = info.data
-        return res.json(data)
-    } catch (e) {
-        console.log(e)
-    }
-
-    res.json({})
+    const access_token = await get_token(oauth, token_options)
+    res.json(access_token)
 })
 
 export default router

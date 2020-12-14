@@ -26,7 +26,9 @@ function TopNav() {
     const [user, setUser] = useState(null)
 
     store.subscribe(() => {
-        setUser(store.getState().user)
+        const u = store.getState().user
+        if (Object.keys(u).length) setUser(store.getState().user)
+        else setUser(null)
     })
 
     return (
@@ -48,6 +50,7 @@ function TopNav() {
                             onClick={() => {
                                 localStorage.clear()
                                 dispatch(logout_user())
+                                return
                             }}
                         >
                             {user.name}
@@ -69,6 +72,7 @@ function Login() {
     const query = useQuery()
     const history = useHistory()
     const store = useStore()
+    const dispatch = useDispatch()
 
     useEffect(() => {
         // do not login twice
@@ -80,13 +84,15 @@ function Login() {
         const code = query.get('code')
         console.log(code)
         fetch_token(code)
+
         async function fetch_token(code) {
-            // const access_token = await get_token(code)
-            // console.log(access_token)
-            const access_token = {
-                name: 'Devin',
-            }
+            const access_token_res = await get_token(code)
+            let access_token = access_token_res.data
+            access_token['name'] = 'Devin'
+            console.log(access_token)
+
             localStorage.setItem('user', JSON.stringify(access_token))
+            dispatch(set_user(access_token))
             history.push('/')
         }
         // TODO: expose client globally

@@ -3,8 +3,9 @@ const axios = require('axios')
 const oauth2_api_function_names = ['account_information', 'consumer']
 
 // Get the access token to create client
-async function get_token(code, options) {
-    const url = options.url
+async function get_token(code, options = {}) {
+    // specify url or default
+    const url = options.url || '/oauth/token'
     const token_res = await axios.get(url, { params: { code: code } })
     return token_res
 }
