@@ -10,7 +10,9 @@ module.exports = function validate_params(
     }
 
     for (const param in options) {
-        if (!(required_params.include(param) || allowed_params.include(param)))
+        if (
+            !(required_params.includes(param) || allowed_params.includes(param))
+        )
             throw `Param ${param} is not a valid param`
     }
 }
