@@ -21,8 +21,6 @@ const oauth = get_oauth2_client(
 let router = express.Router()
 
 // Get the OAuth URL
-// TODO?: hard code auth'ing URL in front end to reduce
-// API call complexity
 router.get('/auth', (req, res) => {
     const auth_url = get_auth_uri(oauth, {
         redirect_uri: config.redirect_uri,

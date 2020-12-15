@@ -15,7 +15,8 @@
         "esm": "^3.2.25",
         "express": "^4.17.1",
         "finastra-api-client": "file:../finastra-api-client",
-        "finastra-api-server": "file:../finastra-api-server"
+        "finastra-api-server": "file:../finastra-api-server",
+        "mongoose": "^5.11.8"
     },
     "devDependencies": {
         "@babel/core": "^7.12.10",
