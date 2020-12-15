@@ -3,25 +3,24 @@ import { Button, Modal, Form } from 'react-bootstrap'
 
 let example_data = [
     {
+        type: 'Congress',
         name: 'Congress Bill',
+        link: '#'
     },
     {
+        type: 'Fancy',
         name: 'Some Fancy Bill 2',
+        link: '#'
     },
 ]
 
 function Bill(props) {
     return (
-        <div className="row">
-            <div className="col-8">
-                <p>{props.name}</p>
-            </div>
-            <div className="col-4">
-                <p>
-                    <a href="#">Translate</a>
-                </p>
-            </div>
-        </div>
+        <tr>
+            <td>{props.type}</td>
+            <td>{props.name}</td>
+            <td><a href={props.link}>Translation</a></td>
+        </tr>
     )
 }
 
@@ -101,9 +100,25 @@ function Loans() {
                 <Pill>Location: {'LA, CA'}</Pill>
                 <Pill>Revenue: {'100k annually'}</Pill>
             </div>
-            {bills.map((bill) => {
-                return <Bill name={bill.name} />
-            })}
+
+            <table className="table table-bordered">
+                <thead>
+                    <th scope="col">Type</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Link to translate</th>
+                </thead>
+                <tbody>
+                    {bills.map((b) => {
+                        return (
+                            <Bill
+                                type={b.type}
+                                name={b.name}
+                                link={b.link}
+                            />
+                        )
+                    })}
+                </tbody>
+            </table>
         </div>
     )
 }
