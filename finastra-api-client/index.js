@@ -1,6 +1,10 @@
 const axios = require('axios')
 
-const oauth2_api_function_names = ['account_information', 'consumer']
+const oauth2_api_function_names = [
+    'account_information',
+    'consumer',
+    'corporate_profile_url',
+]
 
 // Get the access token to create client
 async function get_token(code, options = {}) {
