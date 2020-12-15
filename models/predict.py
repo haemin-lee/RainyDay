@@ -7,9 +7,8 @@ import json
 import numpy as np
 
 VACCINE_FINAL_PCT = 60
+def run_prediction(data):
 
-with open("vacc_levels_sample.json") as f:
-    data = json.load(f)
     vacc_arr = np.array(data["vacc_levels"])
 
     revenues = data["curr_rev"] + np.minimum(vacc_arr/VACCINE_FINAL_PCT, np.ones(vacc_arr.shape)) * (data["norm_rev"] - data["curr_rev"])
@@ -19,5 +18,4 @@ with open("vacc_levels_sample.json") as f:
     data["costs"] = costs.tolist()
     data["profits"] = profits.tolist()
 
-    with open("output.json", "w") as out:
-        json.dump(data, out, indent=4)
+    return json.dumps(data, indent=4)
