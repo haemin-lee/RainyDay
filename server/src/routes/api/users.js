@@ -1,17 +1,28 @@
 import express from 'express'
+import User from '@app/models/user'
 
 let router = express.Router()
 
 // CRUD
 // create new user
-router.post('/', (req, res) => {
-    res.json({ message: 'hello world' })
+router.post('/', async (req, res, next) => {
+    try {
+        const user = await new User(req.body).save().exec()
+        res.json(user)
+    } catch (e) {
+        next(e)
+    }
 })
 
 // get user
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res, next) => {
     const user_id = req.params.id
-    res.json({ id: user_id })
+    try {
+        const user = await User.findOne({ finastra_id: user_id }).exec()
+        res.json(user)
+    } catch (e) {
+        next(e)
+    }
 })
 
 // update user

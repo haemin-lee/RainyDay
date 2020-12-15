@@ -17,6 +17,7 @@ app.use(express.json())
 mongoose.connect(config.db_connection_url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useCreateIndex: true,
 })
 
 // Handle OAuth
