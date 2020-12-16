@@ -16,6 +16,7 @@
         "express": "^4.17.1",
         "finastra-api-client": "file:../finastra-api-client",
         "finastra-api-server": "file:../finastra-api-server",
+        "http-proxy": "^1.18.1",
         "mongoose": "^5.11.8"
     },
     "devDependencies": {

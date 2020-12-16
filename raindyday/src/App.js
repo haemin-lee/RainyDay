@@ -16,6 +16,7 @@ import app_store from './redux/stores'
 import { set_user, logout_user } from './redux/actions/user'
 
 import Home from './pages/home'
+import Test from './pages/test'
 
 function TopNav() {
     const store = useStore()
@@ -113,8 +114,12 @@ function App() {
                 <TopNav />
                 <Switch>
                     {/* this will probably have some 404 issues later... */}
-                    <Route path="/login">
+                    <Route exact path="/login">
                         <Login />
+                    </Route>
+
+                    <Route exact path="/test">
+                        <Test />
                     </Route>
                     <Route path="/">
                         <Home />
