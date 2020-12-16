@@ -1,6 +1,10 @@
 const axios = require('axios')
 
-const oauth2_api_function_names = ['account_information', 'consumer']
+const oauth2_api_function_names = [
+    'account_information',
+    'consumer',
+    'corporate_user_profile',
+]
 
 // Get the access token to create client
 async function get_token(code, options = {}) {
@@ -12,7 +16,7 @@ async function get_token(code, options = {}) {
 
 // Returns an API instance for OAuth2 auth with FusionFabric.cloud
 // Inspired by code from https://github.com/Schmavery/facebook-chat-api/blob/master/index.js
-function get_client(access_token) {
+function get_client(access_token, options = {}) {
     const instance = axios.create({
         timeout: 4000,
         headers: {
@@ -25,7 +29,7 @@ function get_client(access_token) {
     // should look into this
     let api = {}
     oauth2_api_function_names.map((name) => {
-        api[name] = require(`./src/${name}`)(instance)
+        api[name] = require(`./src/${name}`)(instance, options)
     })
     return api
 }

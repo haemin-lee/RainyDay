@@ -7,4 +7,5 @@ export default {
     token_path: process.env.token_path,
     authorize_path: process.env.authorize_path,
     redirect_uri: process.env.redirect_uri,
+    db_connection_url: process.env.db_connection_url,
 }
