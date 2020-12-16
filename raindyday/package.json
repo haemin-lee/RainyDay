@@ -8,6 +8,7 @@
         "@testing-library/react": "^11.1.0",
         "@testing-library/user-event": "^12.1.10",
         "bootstrap": "^4.5.3",
+        "finastra-api-client": "file:../finastra-api-client",
         "react": "^17.0.1",
         "react-bootstrap": "^1.4.0",
         "react-data-grid": "^7.0.0-canary.33",

@@ -1,4 +1,4 @@
-const endpoints = require('endpoint')
+const endpoints = require('./endpoint')
 const validate_params = require('./helpers/validate_params')
 
 // Implements the Finastra Consumer API
@@ -17,8 +17,6 @@ module.exports = (instance) => {
             params: options,
         })
 
-        if (!consumer_res.ok) throw consumer_res
-
         return consumer_res
     }
 
@@ -27,8 +25,6 @@ module.exports = (instance) => {
         const uri = `/consumers/${consumer_id}`
 
         const consumer_res = await instance.get(url + uri)
-
-        if (!consumer_res.ok) throw consumer_res
 
         return consumer_res
     }

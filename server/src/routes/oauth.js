@@ -38,6 +38,7 @@ router.get('/token', async (req, res) => {
     const token_options = get_token_options(code, {
         redirect_uri: config.redirect_uri,
     })
+
     const access_token = await get_token(oauth, token_options)
     res.json(access_token)
 })
