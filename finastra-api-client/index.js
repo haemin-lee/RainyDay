@@ -3,7 +3,7 @@ const axios = require('axios')
 const oauth2_api_function_names = [
     'account_information',
     'consumer',
-    'corporate_profile_url',
+    'corporate_user_profile',
 ]
 
 // Get the access token to create client

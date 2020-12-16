@@ -40,27 +40,58 @@ router.get('/token', async (req, res, next) => {
         redirect_uri: config.redirect_uri,
     })
 
-    const access_token = await get_token(oauth, token_options)
+    const access_token_obj = await get_token(oauth, token_options)
+    const access_token = access_token_obj.token.access_token
 
     const client = get_client(access_token)
-    const finastra_user = await client.corporate_user_profile.get_logged_in_user()
+    const finastra_user_res = await client.corporate_user_profile.get_logged_in_user()
+    const finastra_user = finastra_user_res.data
 
-    // find or create new user
     try {
-        let user = await User.findOne({ finastra_id: finastra_user.id }).exec()
+        // find or create new user
+        let user = await User.findOne({ finastra_id: finastra_user.id })
+            .lean()
+            .exec()
         if (!user)
             user = await new User({
                 firstName: finastra_user.firstName,
                 lastName: finastra_user.lastName,
                 finastra_id: finastra_user.id,
             })
+                .lean()
                 .save()
-                .exec()
 
         user.access_token = access_token
 
         res.json(user)
     } catch (e) {
+        console.log(e)
+        next(e)
+    }
+})
+
+// Ensure access token is still good and nothing bad happened to user
+// It's a hackathon I'll do this later...
+router.get('/login', async (req, res, next) => {
+    const access_token = req.query.access_token
+
+    const client = get_client(access_token)
+    const finastra_user_res = await client.corporate_user_profile.get_logged_in_user()
+    const finastra_user = finastra_user_res.data
+
+    try {
+        // find or create new user
+        let user = await User.findOne({ finastra_id: finastra_user.id })
+            .lean()
+            .exec()
+        // awk
+        if (!user) throw 'user does not exist'
+
+        user.access_token = access_token
+
+        res.json(user)
+    } catch (e) {
+        console.log(e)
         next(e)
     }
 })
