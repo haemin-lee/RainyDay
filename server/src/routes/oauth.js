@@ -57,13 +57,12 @@ router.get('/token', async (req, res, next) => {
                 firstName: finastra_user.firstName,
                 lastName: finastra_user.lastName,
                 finastra_id: finastra_user.id,
-            })
-                .lean()
-                .save()
+            }).save()
 
-        user.access_token = access_token
+        const u = user.toObject()
+        u.access_token = access_token
 
-        res.json(user)
+        res.json(u)
     } catch (e) {
         console.log(e)
         next(e)
