@@ -52,17 +52,19 @@ router.get('/token', async (req, res, next) => {
         let user = await User.findOne({ finastra_id: finastra_user.id })
             .lean()
             .exec()
-        if (!user)
+
+        if (!user) {
             user = await new User({
                 firstName: finastra_user.firstName,
                 lastName: finastra_user.lastName,
                 finastra_id: finastra_user.id,
             }).save()
+            const u = user.toObject()
+            u.access_token = access_token
+            return res.json(u)
+        }
 
-        const u = user.toObject()
-        u.access_token = access_token
-
-        res.json(u)
+        res.json(user)
     } catch (e) {
         console.log(e)
         next(e)
