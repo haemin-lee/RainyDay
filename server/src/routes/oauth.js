@@ -64,6 +64,7 @@ router.get('/token', async (req, res, next) => {
             return res.json(u)
         }
 
+        user.access_token = access_token
         res.json(user)
     } catch (e) {
         console.log(e)
