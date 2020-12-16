@@ -3,7 +3,6 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link,
     useHistory,
     useLocation,
 } from 'react-router-dom'
@@ -11,13 +10,13 @@ import { Provider, useDispatch, useStore } from 'react-redux'
 
 import { Navbar, Nav } from 'react-bootstrap'
 
-import { get_token, get_client } from 'finastra-api-client'
+import { get_token } from 'finastra-api-client'
 
-// import { store } from '@app/redux/stores'
 import app_store from './redux/stores'
 import { set_user, logout_user } from './redux/actions/user'
 
 import Home from './pages/home'
+import Test from './pages/test'
 
 function TopNav() {
     const store = useStore()
@@ -53,7 +52,7 @@ function TopNav() {
                                 return
                             }}
                         >
-                            {user.name}
+                            {user.firstName} {user.lastName}
                         </Nav.Link>
                     </Nav>
                 )}
@@ -82,24 +81,19 @@ function Login() {
         }
         // get access token
         const code = query.get('code')
-        console.log(code)
         fetch_token(code)
 
         async function fetch_token(code) {
             const access_token_res = await get_token(code)
             let access_token = access_token_res.data
-            access_token['name'] = 'Devin'
-            console.log(access_token)
 
             localStorage.setItem('user', JSON.stringify(access_token))
             dispatch(set_user(access_token))
             history.push('/')
         }
-        // TODO: expose client globally
-        // get_client()
     })
 
-    // Loading screen?
+    // TODO: Loading screen?
     return <></>
 }
 
@@ -107,21 +101,25 @@ function App() {
     const dispatch = useDispatch()
     useEffect(() => {
         // set up auth
+        // TODO: stop assuming access token is always valid
         const user = localStorage.getItem('user')
         if (user) {
             // set up redux state
-            // TODO: check token expiration
             dispatch(set_user(JSON.parse(user)))
         }
     })
     return (
         <>
-            <TopNav />
             <Router>
+                <TopNav />
                 <Switch>
                     {/* this will probably have some 404 issues later... */}
-                    <Route path="/login">
+                    <Route exact path="/login">
                         <Login />
+                    </Route>
+
+                    <Route exact path="/test">
+                        <Test />
                     </Route>
                     <Route path="/">
                         <Home />

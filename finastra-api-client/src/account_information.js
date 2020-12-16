@@ -3,8 +3,9 @@ const validate_params = require('./helpers/validate_params')
 
 // Implements the Finastra Accounts and Balances API
 // https://developer.fusionfabric.cloud/api/corporate-accounteinfo-me-v1-831cb09d-cc10-4772-8ed5-8a6b72ec8e01/docs
-module.exports = (instance) => {
-    const url = endpoints.accounts_url
+module.exports = (instance, options = {}) => {
+    const url =
+        (options.url ? options.url : endpoints.ROOT) + endpoints.accounts_url
 
     // This API returns a list of accounts for the authenticated corporate user
     async function get_accounts_information(options) {
