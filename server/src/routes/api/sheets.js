@@ -22,9 +22,24 @@ router.post('/', async (req, res, next) => {
 
     try {
         const user = await User.findOneById(user_id).exec()
-        let data = req.body
-        data.user = user._id
+        const data = { user: user._id }
         const sheet = new Sheet(data).save()
+
+        res.json(sheet)
+    } catch (e) {
+        next(e)
+    }
+})
+
+// update thingy
+router.put('/:id', async (req, res, next) => {
+    const sheet_id = req.params.id
+    try {
+        const sheet = await Sheet.findByIdAndUpdate(
+            sheet_id,
+            { data: req.body.data },
+            { new: true }
+        )
 
         res.json(sheet)
     } catch (e) {
