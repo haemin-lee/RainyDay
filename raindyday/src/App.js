@@ -15,6 +15,7 @@ import { get_token } from 'finastra-api-client'
 import app_store from './redux/stores'
 import { set_user, logout_user } from './redux/actions/user'
 
+import Splash from './pages/splash'
 import Home from './pages/home'
 import Test from './pages/test'
 
@@ -98,7 +99,9 @@ function Login() {
 }
 
 function App() {
+    const store = useStore()
     const dispatch = useDispatch()
+
     useEffect(() => {
         // set up auth
         // TODO: stop assuming access token is always valid
@@ -121,9 +124,17 @@ function App() {
                     <Route exact path="/test">
                         <Test />
                     </Route>
-                    <Route path="/">
-                        <Home />
-                    </Route>
+                    {Object.keys(store.getState().user).length ? (
+                        // display datas
+                        <Route path="/">
+                            <Home />
+                        </Route>
+                    ) : (
+                        // otherwise splash
+                        <Route path="/">
+                            <Splash />
+                        </Route>
+                    )}
                 </Switch>
             </Router>
         </>
