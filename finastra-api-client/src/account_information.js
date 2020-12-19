@@ -1,17 +1,25 @@
-const endpoints = require('endpoint')
+const endpoints = require('./endpoint')
 const validate_params = require('./helpers/validate_params')
 
 // Implements the Finastra Accounts and Balances API
 // https://developer.fusionfabric.cloud/api/corporate-accounteinfo-me-v1-831cb09d-cc10-4772-8ed5-8a6b72ec8e01/docs
-module.exports = (instance) => {
-    const url = endpoints.accounts_url
+module.exports = (instance, options = {}) => {
+    const url =
+        (options.url ? options.url : endpoints.ROOT) + endpoints.accounts_url
+
     // This API returns a list of accounts for the authenticated corporate user
-    async function get_accounts_information() {
+    async function get_accounts_information(options) {
+        // accountContext must be
+        // VIEW-ACCOUNT, INTERNAL-TRANSFER, THIRD-PARTY-TRANSFER,
+        // DOMESTIC-TRANSFER, or MT103
+        const required_params = ['accountContext']
+        const allowed_params = ['limit', 'offset']
+
+        validate_params(required_params, allowed_params, options)
+
         const uri = '/accounts'
 
-        const account_res = await instance.get(url + uri)
-
-        if (!account_res.ok) throw account_res
+        const account_res = await instance.get(url + uri, { params: options })
 
         return account_res
     }
@@ -21,8 +29,6 @@ module.exports = (instance) => {
         const uri = `/accounts/${account_id}`
 
         const account_res = await instance.get(url + uri)
-
-        if (!account_res.ok) throw account_res
 
         return account_res
     }
@@ -40,8 +46,6 @@ module.exports = (instance) => {
         const statement_res = await instance.get(url + uri, {
             params: options,
         })
-
-        if (!statement_res.ok) throw statement_res
 
         return statement_res
     }
@@ -64,8 +68,6 @@ module.exports = (instance) => {
             params: options,
         })
 
-        if (!balances_res.ok) throw balances_res
-
         return balances_res
     }
 
@@ -74,8 +76,6 @@ module.exports = (instance) => {
         const uri = `/accounts/${account_id}/balances`
 
         const balance_res = await instance.get(url + uri)
-
-        if (!balance_res.ok) throw balance_res
 
         return balance_res
     }

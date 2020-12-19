@@ -4,7 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon index.js --exec babel-node",
+        "start": "babel-node index.js",
+        "dev": "nodemon -r dotenv/config index.js --exec babel-node",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
@@ -13,13 +14,17 @@
     "dependencies": {
         "esm": "^3.2.25",
         "express": "^4.17.1",
-        "finastra-api-server": "file:../finastra-api-server"
+        "finastra-api-client": "file:../finastra-api-client",
+        "finastra-api-server": "file:../finastra-api-server",
+        "http-proxy": "^1.18.1",
+        "mongoose": "^5.11.8"
     },
     "devDependencies": {
         "@babel/core": "^7.12.10",
         "@babel/node": "^7.12.10",
         "@babel/preset-env": "^7.12.10",
         "babel-plugin-module-resolver": "^4.0.0",
+        "dotenv": "^8.2.0",
         "eslint": "^7.15.0",
         "eslint-import-resolver-babel-module": "^5.2.0",
         "eslint-plugin-import": "^2.22.1",

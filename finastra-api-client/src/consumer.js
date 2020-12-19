@@ -1,10 +1,11 @@
-const endpoints = require('endpoint')
+const endpoints = require('./endpoint')
 const validate_params = require('./helpers/validate_params')
 
 // Implements the Finastra Consumer API
 // https://developer.fusionfabric.cloud/api/b2b-customer-read-v1-870364be-1dbe-4fe6-a202-fbbc498e0e74/docs
-module.exports = (instance) => {
-    const url = endpoints.consumer_url
+module.exports = (instance, options = {}) => {
+    const url =
+        (options.url ? options.url : endpoints.ROOT) + endpoints.consumer_url
     // Perform a consumer search based on criteria
     async function get_consumers(options) {
         const required_params = []
@@ -17,8 +18,6 @@ module.exports = (instance) => {
             params: options,
         })
 
-        if (!consumer_res.ok) throw consumer_res
-
         return consumer_res
     }
 
@@ -27,8 +26,6 @@ module.exports = (instance) => {
         const uri = `/consumers/${consumer_id}`
 
         const consumer_res = await instance.get(url + uri)
-
-        if (!consumer_res.ok) throw consumer_res
 
         return consumer_res
     }
