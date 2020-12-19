@@ -6,6 +6,8 @@ const oauth2_api_function_names = [
     'corporate_user_profile',
 ]
 
+const server_api_function_names = ['users', 'sheets']
+
 // Get the access token to create client
 async function get_token(code, options = {}) {
     // specify url or default
@@ -21,6 +23,8 @@ function get_client(access_token, options = {}) {
         timeout: 4000,
         headers: {
             Authorization: `Bearer ${access_token}`,
+            // use for regular API
+            'X-Authenticated-User': options.user_id,
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
@@ -31,6 +35,15 @@ function get_client(access_token, options = {}) {
     oauth2_api_function_names.map((name) => {
         api[name] = require(`./src/${name}`)(instance, options)
     })
+
+    // requires custom url
+    // idk name it server_url
+    // also tfw no planning tfw ur bad tfw
+    if (options.user_id)
+        server_api_function_names.map((name) => {
+            api[name] = require(`./src/${name}`)(instance, options)
+        })
+
     return api
 }
 
