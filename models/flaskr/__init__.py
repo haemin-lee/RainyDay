@@ -2,9 +2,10 @@ from flask import Flask, request
 import os
 import sys
 import json
+import numpy as np
 sys.path.append("../")
 import predict
-
+import linear_regression
 
 def create_app(test_config=None):
     # create and configure the app
@@ -33,12 +34,10 @@ def create_app(test_config=None):
         return 'Hello, World!'
 
     # attempt at sending json file
-    # PARAMS:
-    # vacc_levels - JSON file encoded as string
     #
-    @app.route('/predict', methods=['GET', 'POST', 'PUT'])
+    @app.route('/predict', methods=['POST'])
     def prediction():
-        vacc_levels = json.loads(request.form['vacc_levels'])
+        vacc_levels = request.json
         data = predict.run_prediction(vacc_levels)
 
         response = app.response_class(
@@ -47,5 +46,38 @@ def create_app(test_config=None):
             mimetype = 'application/json'
         )
         return response
+
+    @app.route('/knn', methods=['POST'])
+    def knn():
+        yearly_samples = request.json
+        # jenna just plug something right here for data
+        # should preferably be a json file but if not we can work with it
+        data = None
+
+        response = app.response_class(
+            response = json.dumps(data),
+            status = 200,
+            mimetype = 'application/json'
+        )
+        return response
+
+    @app.route('lin_regression', methods=['POST'])
+    def lin_regression():
+        yearly_sample = request.json
+        try:
+            data = linear_regression.run_lin_regression(yearly_sample)
+
+            response = app.response_class(
+                response = json.dumps(data),
+                status = 200,
+                mimetype = 'application/json'
+            )
+        except np.linalg.LinAlgError e:
+            response = app.response_class(
+                response = "singluar matrix ripperoni",
+                status = 400,
+            )
+
+
 
     return app
