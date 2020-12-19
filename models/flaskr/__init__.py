@@ -52,8 +52,12 @@ def create_app(test_config=None):
         yearly_samples = request.json
         # jenna just plug something right here for data
         # should preferably be a json file but if not we can work with it
-        data = None
-
+        data = k_nearest_neighbors(
+            yearly_samples["labeled_x"],
+            yearly_samples["labeled_y"],
+            yearly_samples["unlabeled_data"]
+        )
+        
         response = app.response_class(
             response = json.dumps(data),
             status = 200,
