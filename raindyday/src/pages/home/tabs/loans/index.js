@@ -1,27 +1,27 @@
 import { useState } from 'react'
 import { Button, Modal, Form } from 'react-bootstrap'
+import PlacesAutocomplete from 'react-places-autocomplete';
 
 let example_data = [
     {
+        type: 'Congress',
         name: 'Congress Bill',
+        link: '#'
     },
     {
+        type: 'Fancy',
         name: 'Some Fancy Bill 2',
+        link: '#'
     },
 ]
 
 function Bill(props) {
     return (
-        <div className="row">
-            <div className="col-8">
-                <p>{props.name}</p>
-            </div>
-            <div className="col-4">
-                <p>
-                    <a href="#">Translate</a>
-                </p>
-            </div>
-        </div>
+        <tr>
+            <td>{props.type}</td>
+            <td>{props.name}</td>
+            <td><a href={props.link}>Translation</a></td>
+        </tr>
     )
 }
 
@@ -46,6 +46,9 @@ function EditModal() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [search, setSearch] = useState("");
+    const handleChange = (searchString) => setSearch(searchString);
+
     return (
         <div>
           <Button variant="primary" onClick={handleShow}>
@@ -63,10 +66,47 @@ function EditModal() {
                     <Form.Control placeholder="Enter number" type="number" id="numWorkers"/>
                   </Form.Group>
 
-                  <Form.Group controlId="formLocation">
-                    <Form.Label>Location</Form.Label>
-                    <Form.Control placeholder="Enter location" id="location"/>
-                  </Form.Group>
+                <Form.Group> 
+                <Form.Label>Location</Form.Label>
+                <PlacesAutocomplete
+                    value={search}
+                    onChange={handleChange}
+                  >
+                    {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                      <div>
+                        <input
+                          {...getInputProps({
+                            placeholder: 'Search Places ...',
+                            className: 'location-search-input',
+                            id: 'location'
+                          })}
+                        />
+                        <div className="autocomplete-dropdown-container">
+                          {loading && <div>Loading...</div>}
+                          {suggestions.map(suggestion => {
+                            const className = suggestion.active
+                              ? 'suggestion-item--active'
+                              : 'suggestion-item';
+                            // inline style for demonstration purpose
+                            const style = suggestion.active
+                              ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                              : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                            return (
+                              <div
+                                {...getSuggestionItemProps(suggestion, {
+                                  className,
+                                  style,
+                                })}
+                              >
+                                <span>{suggestion.description}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                </PlacesAutocomplete>
+                </Form.Group>
 
                   <Form.Group controlId="formAnnualRevenue">
                     <Form.Label>Annual Revenue</Form.Label>
@@ -89,6 +129,7 @@ function EditModal() {
 
 function Loans() {
     const [bills, setBills] = useState(example_data)
+
     return (
         <div>
             <div className="row">
@@ -101,9 +142,25 @@ function Loans() {
                 <Pill>Location: {'LA, CA'}</Pill>
                 <Pill>Revenue: {'100k annually'}</Pill>
             </div>
-            {bills.map((bill) => {
-                return <Bill name={bill.name} />
-            })}
+
+            <table className="table table-bordered">
+                <thead>
+                    <th scope="col">Type</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Link to translate</th>
+                </thead>
+                <tbody>
+                    {bills.map((b) => {
+                        return (
+                            <Bill
+                                type={b.type}
+                                name={b.name}
+                                link={b.link}
+                            />
+                        )
+                    })}
+                </tbody>
+            </table>
         </div>
     )
 }
