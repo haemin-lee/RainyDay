@@ -15,6 +15,7 @@ import { get_token } from 'finastra-api-client'
 import app_store from './redux/stores'
 import { set_user, logout_user } from './redux/actions/user'
 
+import Splash from './pages/splash'
 import Home from './pages/home'
 import Test from './pages/test'
 
@@ -31,7 +32,8 @@ function TopNav() {
     })
 
     return (
-        <Navbar bg="light" expand="lg">
+        {/*<Navbar bg="light" expand="lg">*/}
+        <div className="navbar navbar-expand-lg navbar-light navbar-transparent">
             <Navbar.Brand href="/">Welcome_Beemo</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
@@ -57,7 +59,8 @@ function TopNav() {
                     </Nav>
                 )}
             </Navbar.Collapse>
-        </Navbar>
+        </div>
+        {/*</Navbar>*/}
     )
 }
 
@@ -98,16 +101,25 @@ function Login() {
 }
 
 function App() {
+    const store = useStore()
     const dispatch = useDispatch()
+    const [user, setUser] = useState(null)
+
     useEffect(() => {
         // set up auth
         // TODO: stop assuming access token is always valid
         const user = localStorage.getItem('user')
         if (user) {
             // set up redux state
+            console.log('dispatching...')
             dispatch(set_user(JSON.parse(user)))
+            setUser(JSON.parse(user))
         }
-    })
+        // const u = store.getState().user
+        // console.log(u)
+        // console.log(Object.keys(u).length)
+    }, [setUser])
+
     return (
         <>
             <Router>
@@ -121,9 +133,17 @@ function App() {
                     <Route exact path="/test">
                         <Test />
                     </Route>
-                    <Route path="/">
-                        <Home />
-                    </Route>
+                    {user ? (
+                        // display datas
+                        <Route path="/">
+                            <Home />
+                        </Route>
+                    ) : (
+                        // otherwise splash
+                        <Route path="/">
+                            <Splash />
+                        </Route>
+                    )}
                 </Switch>
             </Router>
         </>

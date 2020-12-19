@@ -6,7 +6,7 @@ const oauth2_api_function_names = [
     'corporate_user_profile',
 ]
 
-const server_api_function_names = ['users', 'sheets']
+const server_api_function_names = ['users', 'sheets', 'analyze', 'translate']
 
 // Get the access token to create client
 async function get_token(code, options = {}) {
@@ -19,16 +19,20 @@ async function get_token(code, options = {}) {
 // Returns an API instance for OAuth2 auth with FusionFabric.cloud
 // Inspired by code from https://github.com/Schmavery/facebook-chat-api/blob/master/index.js
 function get_client(access_token, options = {}) {
+    let headers = {
+        Authorization: `Bearer ${access_token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+    }
+
+    // use for regular API
+    if (options.user_id) headers['X-Authenticated-User'] = options.user_id
+
     const instance = axios.create({
         timeout: 4000,
-        headers: {
-            Authorization: `Bearer ${access_token}`,
-            // use for regular API
-            'X-Authenticated-User': options.user_id,
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
+        headers: headers,
     })
+
     // is it bad practice to mix import/require?
     // should look into this
     let api = {}

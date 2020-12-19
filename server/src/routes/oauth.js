@@ -53,7 +53,6 @@ router.get('/token', async (req, res, next) => {
             .lean()
             .exec()
 
-        // TODO: create default sheets IF non variable sheets
         if (!user) {
             user = await new User({
                 firstName: finastra_user.firstName,

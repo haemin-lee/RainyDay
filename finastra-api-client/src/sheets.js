@@ -10,17 +10,31 @@ module.exports = (instance, options = {}) => {
         return res
     }
 
-    // could be post sheets later depending on infrastructure design
-    async function post_sheet(data) {
+    // create new sheet
+    async function create_sheet() {
         const uri = '/sheets'
 
-        const res = await instance.post(url + uri, data)
+        const res = await instance.post(url + uri)
+
+        return res
+    }
+
+    // update sheet
+    async function update_sheet(id, data) {
+        const uri = `/sheets/${id}`
+
+        const body = {
+            data: data,
+        }
+
+        const res = await instance.put(url + uri, body)
 
         return res
     }
 
     return {
         get_sheets,
-        post_sheet,
+        create_sheet,
+        update_sheet,
     }
 }
