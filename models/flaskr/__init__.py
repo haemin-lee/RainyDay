@@ -61,7 +61,7 @@ def create_app(test_config=None):
         )
         return response
 
-    @app.route('lin_regression', methods=['POST'])
+    @app.route('/lin_regression', methods=['POST'])
     def lin_regression():
         yearly_sample = request.json
         try:
