@@ -12,6 +12,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@google-cloud/translate": "^6.0.5",
         "esm": "^3.2.25",
         "express": "^4.17.1",
         "finastra-api-client": "file:../finastra-api-client",

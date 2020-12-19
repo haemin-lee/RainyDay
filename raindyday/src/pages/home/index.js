@@ -1,5 +1,5 @@
 import { Nav } from 'react-bootstrap'
-import { Switch, Route, Routes, NavLink, Link } from 'react-router-dom'
+import { Switch, Route, NavLink } from 'react-router-dom'
 
 import { Dashboard, Predictions, Loans } from './tabs'
 // figure styles out later...
