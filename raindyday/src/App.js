@@ -101,6 +101,7 @@ function Login() {
 function App() {
     const store = useStore()
     const dispatch = useDispatch()
+    const [user, setUser] = useState(null)
 
     useEffect(() => {
         // set up auth
@@ -108,9 +109,15 @@ function App() {
         const user = localStorage.getItem('user')
         if (user) {
             // set up redux state
+            console.log('dispatching...')
             dispatch(set_user(JSON.parse(user)))
+            setUser(JSON.parse(user))
         }
-    })
+        // const u = store.getState().user
+        // console.log(u)
+        // console.log(Object.keys(u).length)
+    }, [setUser])
+
     return (
         <>
             <Router>
@@ -124,7 +131,7 @@ function App() {
                     <Route exact path="/test">
                         <Test />
                     </Route>
-                    {Object.keys(store.getState().user).length ? (
+                    {user ? (
                         // display datas
                         <Route path="/">
                             <Home />
