@@ -1,23 +1,13 @@
 // Future feature: import from Excel
-import { useState } from 'react'
 import ReactDOM from "react-dom";
 import ReactDataGrid from "react-data-grid";
 import DataGrid from 'react-data-grid';
 // import 'react-data-grid/dist/react-data-grid.css';
 import '../../../../datagrid_style.css';
 import { TextEditor } from "react-data-grid";
+import { useEffect, useState } from 'react'
+import get_client from '../../../../api/finastra'
 
-const columns3 = [
-    { key: "id", name: "ID", editor: TextEditor},
-    { key: "title", name: "Title", editor: TextEditor },
-    { key: "complete", name: "Complete", editor: TextEditor },
-];
-
-const rows = [
-    { id: 0, title: "Task 1", complete: 20 },
-    { id: 1, title: "Task 2", complete: 40 },
-    { id: 2, title: "Task 3", complete: 60 },
-];
 
 const rowsOperatingIncome = [
     { Name: "Sales", Expected: 200, Total: 300, January: 100, February: 100, March: 100, April: 100, May: 100, June: 100, July: 100, August: 100, July: 100, September: 100, October: 100, November: 100, December: 100},
@@ -59,7 +49,7 @@ const columns = [
 
 // Prob better way to do prop mapping
 function Dashboard() {
-
+    const [data, setData] = useState([])
     const [grid1, setGrid1] = useState(rowsOperatingIncome);
     const [grid2, setGrid2] = useState(rowsCostOfGoodsSold);
     const [grid3, setGrid3] = useState(rowsOperatingCost);
@@ -74,8 +64,32 @@ function Dashboard() {
         setGrid3(updatedRows);
     };
 
+
+    useEffect(() => {
+        test_api()
+
+        async function test_api() {
+            const options = {
+                accountContext: 'VIEW-ACCOUNT',
+            }
+
+            const client = get_client()
+            console.log("hi")
+            console.log(client)
+
+            const data = await client.account_information.get_accounts_information(
+                options
+            )
+            setData(data.data)
+        }
+    }, [])
+
+
     return (
         <div>
+            <div className="container">
+                <code>{JSON.stringify(data)}</code>
+            </div>
             <h2>
                 Operating Income
             </h2>
