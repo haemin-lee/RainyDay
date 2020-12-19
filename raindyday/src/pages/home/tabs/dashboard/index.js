@@ -1,8 +1,4 @@
-// Future feature: import from Excel
-import ReactDOM from 'react-dom'
-import ReactDataGrid from 'react-data-grid'
 import DataGrid from 'react-data-grid'
-// import 'react-data-grid/dist/react-data-grid.css';
 import '../../../../datagrid_style.css'
 import { TextEditor } from 'react-data-grid'
 import { useEffect, useState } from 'react'

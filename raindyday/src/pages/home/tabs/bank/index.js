@@ -1,3 +1,6 @@
+import DataGrid from 'react-data-grid'
+import '../../../../datagrid_style.css'
+
 import { useEffect, useState } from 'react'
 import get_client from '../../../../api/finastra'
 
@@ -114,6 +117,33 @@ const TEST = [
     },
 ]
 
+const columns = [
+    {
+        key: 'postingDate',
+        name: 'Posting Date',
+    },
+    {
+        key: 'valueDate',
+        name: 'Value Date',
+    },
+    {
+        key: 'currency',
+        name: 'Currency',
+    },
+    {
+        key: 'amount',
+        name: 'Amount',
+    },
+    {
+        key: 'transactionType',
+        name: 'Type',
+    },
+    {
+        key: 'balance',
+        name: 'Balance',
+    },
+]
+
 function Account(props) {
     const [data, setData] = useState([])
 
@@ -134,7 +164,7 @@ function Account(props) {
             options
         )
 
-        setData(d.data)
+        setData(d.data.items)
     }
 
     return (
@@ -160,9 +190,7 @@ function Account(props) {
                         <p>{props.data.bankShortName}</p>
                         <p>{props.data.type}</p>
                         <p>{props.data.number}</p>
-                        <p>
-                            <code>{JSON.stringify(data)}</code>
-                        </p>
+                        <DataGrid columns={columns} rows={data} />
                     </div>
                 </div>
             </div>
