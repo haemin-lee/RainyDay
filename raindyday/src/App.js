@@ -32,7 +32,8 @@ function TopNav() {
     })
 
     return (
-        <Navbar bg="light" expand="lg">
+        {/*<Navbar bg="light" expand="lg">*/}
+        <div className="navbar navbar-expand-lg navbar-light navbar-transparent">
             <Navbar.Brand href="/">Welcome_Beemo</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
@@ -58,7 +59,8 @@ function TopNav() {
                     </Nav>
                 )}
             </Navbar.Collapse>
-        </Navbar>
+        </div>
+        {/*</Navbar>*/}
     )
 }
 
