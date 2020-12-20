@@ -7,7 +7,7 @@ module.exports = (instance, options = {}) => {
         const uri = '/analyze'
 
         const res = await instance.post(url + uri, data)
-
+        console.log(res)
         return res
     }
 

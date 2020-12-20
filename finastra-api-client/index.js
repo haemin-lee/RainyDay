@@ -29,7 +29,7 @@ function get_client(access_token, options = {}) {
     if (options.user_id) headers['X-Authenticated-User'] = options.user_id
 
     const instance = axios.create({
-        timeout: 4000,
+        timeout: 10000,
         headers: headers,
     })
 

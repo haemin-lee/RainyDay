@@ -1,6 +1,6 @@
 import linear_regression
 import predict
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import os
 import sys
 import json
@@ -41,12 +41,12 @@ def create_app(test_config=None):
         vacc_levels = request.json
         data = predict.run_prediction(vacc_levels)
 
-        response = app.response_class(
-            response=json.dumps(data),
-            status=200,
-            mimetype='application/json'
-        )
-        return response
+        # response = app.response_class(
+        #     response=json(data),
+        #     status=200,
+        #     mimetype='application/json'
+        # )
+        return jsonify(data)
 
     @app.route('/knn', methods=['POST'])
     def knn():
@@ -71,16 +71,21 @@ def create_app(test_config=None):
         yearly_sample = request.json
         try:
             data = linear_regression.run_lin_regression(yearly_sample)
-
-            response = app.response_class(
-                response=json.dumps(data),
-                status=200,
-                mimetype='application/json'
-            )
+            return jsonify(data)
+            # response = app.response_class(
+            #     response=json.dumps(data),
+            #     status=200,
+            #     mimetype='application/json'
+            # )
+            # print(response)
+            # print("success yay")
+            # return response
         except np.linalg.LinAlgError as e:
+            print("linalg error")
             response = app.response_class(
                 response="singluar matrix ripperoni",
                 status=400,
             )
+            return response
 
     return app

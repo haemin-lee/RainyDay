@@ -22,7 +22,7 @@ const proxy = http_proxy.createProxyServer({
 
 // forward request bc finastra doesn't know how oauth works
 proxy.on('proxyReq', (proxyReq, req) => {
-    console.log(req.headers)
+    //console.log(req.headers)
     proxyReq.headers = req.headers
     proxyReq.write(JSON.stringify(req.body))
 })

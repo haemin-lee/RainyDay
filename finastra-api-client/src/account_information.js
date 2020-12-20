@@ -40,9 +40,10 @@ module.exports = (instance, options = {}) => {
         const allowed_params = ['limit', 'offset']
 
         validate_params(required_params, allowed_params, options)
+        console.log("account_id: " + account_id)
 
         const uri = `/accounts/${account_id}/statement`
-
+        console.log("uri: " + uri)
         const statement_res = await instance.get(url + uri, {
             params: options,
         })
