@@ -40,6 +40,51 @@ function Predictions(props) {
         return d.data;
     }
 
+    //pass in data from get_analysis and return data in format so it can be used by nivo.
+    function convert_data_into_nivo_data(data) {
+        months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ]
+        let num_months = data.revenues.length;
+        let old_num_months = data.past_revs.length;
+
+        //graph that is generated from API predictions
+        let predict_nivo_data = []
+        for(let i = 0; i < num_months; i++){
+            let sample = {
+                month: months[i],
+                revenue: data.revenues[i],
+                cost: data.costs[i],
+                profit: data.profits[i]
+            }
+            predict_nivo_data.push(sample)
+        }
+
+        //graph that is generated from past data
+        let past_nivo_data = []
+        for(let i = 0; i < old_num_months; i++){
+            let sample = {
+                month: months[i],
+                revenue: data.past_revs[i],
+                cost: data.past_costs[i],
+                profit: data.past_revs[i] - data.past_costs[i]
+            }
+            past_nivo_data.push(sample)
+        }
+        return [predict_nivo_data, past_nivo_data]
+    }
+
     return <div>
             <div>
                 <div>January</div><Slider></Slider>
@@ -53,8 +98,8 @@ function Predictions(props) {
             <div>
             <ResponsiveBar
         data={data}
-        keys={[ 'hot dog', 'burger', 'sandwich', 'kebab', 'fries', 'donut' ]}
-        indexBy="country"
+        keys={[ 'revenue', 'cost', 'profit']}
+        indexBy=
         margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
         padding={0.3}
         groupMode="grouped"
