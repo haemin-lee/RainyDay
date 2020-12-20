@@ -113,9 +113,6 @@ function App() {
             dispatch(set_user(JSON.parse(user)))
             setUser(JSON.parse(user))
         }
-        // const u = store.getState().user
-        // console.log(u)
-        // console.log(Object.keys(u).length)
     }, [setUser])
 
     return (
