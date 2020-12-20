@@ -34,7 +34,12 @@ function TopNav() {
 
     return (
         <div className="navbar navbar-expand-lg navbar-light navbar-transparent">
-            <Navbar.Brand href="/">Welcome_Beemo</Navbar.Brand>
+            <Navbar.Brand href="/">
+            <a class="navbar-brand" href="#">
+                <img src="./logo.png" alt="" />
+            </a>
+            Rainy Day
+            </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 {!user ? (
