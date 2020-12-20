@@ -6,7 +6,7 @@ const oauth2_api_function_names = [
     'corporate_user_profile',
 ]
 
-const server_api_function_names = ['users', 'sheets', 'analyze', 'translate']
+const server_api_function_names = ['users', 'sheets', 'analyze', 'translate', 'loans']
 
 // Get the access token to create client
 async function get_token(code, options = {}) {

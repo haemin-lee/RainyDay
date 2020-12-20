@@ -1,11 +1,12 @@
+import linear_regression
+import predict
 from flask import Flask, request
 import os
 import sys
 import json
 import numpy as np
 sys.path.append("../")
-import predict
-import linear_regression
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -41,9 +42,9 @@ def create_app(test_config=None):
         data = predict.run_prediction(vacc_levels)
 
         response = app.response_class(
-            response = json.dumps(data),
-            status = 200,
-            mimetype = 'application/json'
+            response=json.dumps(data),
+            status=200,
+            mimetype='application/json'
         )
         return response
 
@@ -57,11 +58,11 @@ def create_app(test_config=None):
             yearly_samples["labeled_y"],
             yearly_samples["unlabeled_data"]
         )
-        
+
         response = app.response_class(
-            response = json.dumps(data),
-            status = 200,
-            mimetype = 'application/json'
+            response=json.dumps(data),
+            status=200,
+            mimetype='application/json'
         )
         return response
 
@@ -72,16 +73,14 @@ def create_app(test_config=None):
             data = linear_regression.run_lin_regression(yearly_sample)
 
             response = app.response_class(
-                response = json.dumps(data),
-                status = 200,
-                mimetype = 'application/json'
+                response=json.dumps(data),
+                status=200,
+                mimetype='application/json'
             )
-        except np.linalg.LinAlgError e:
+        except np.linalg.LinAlgError as e:
             response = app.response_class(
-                response = "singluar matrix ripperoni",
-                status = 400,
+                response="singluar matrix ripperoni",
+                status=400,
             )
-
-
 
     return app
