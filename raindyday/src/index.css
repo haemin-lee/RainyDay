@@ -4,10 +4,17 @@
     border-radius: 10px;
     align-items: center;
     justify-content: center;
+    margin: 20px 0px;
 }
 
-h1{
-	font-family: Poppins;
+h1 {
+    font-family: Poppins;
+}
+
+.navbar.transparent {
+    border-width: 0px;
+    box-shadow: 0px 0px;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 h2{

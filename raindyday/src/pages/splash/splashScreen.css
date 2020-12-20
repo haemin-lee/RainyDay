@@ -1,14 +1,15 @@
-.container{
-	background-color: #B4D0D8;
+.container {
+    background-color: #b4d0d8;
 }
 
-.gif{
-	display: block;
-	margin-left: auto;
-  	margin-right: auto;
-  	width: 50%;
+.gif {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
 }
 
-.text{
-	text-align: center;
+.text {
+    text-align: center;
 }
+
