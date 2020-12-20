@@ -1,7 +1,7 @@
 import { Nav } from 'react-bootstrap'
 import { Switch, Route, NavLink } from 'react-router-dom'
 
-import { Dashboard, Predictions, Loans, Bank } from './tabs'
+import { Dashboard, Loans, Bank } from './tabs'
 // figure styles out later...
 function Home() {
     return (
@@ -12,9 +12,6 @@ function Home() {
                 </Route>
                 <Route exact path="/bank">
                     <Bank />
-                </Route>
-                <Route exact path="/predictions">
-                    <Predictions />
                 </Route>
                 <Route exact path="/loans">
                     <Loans />
