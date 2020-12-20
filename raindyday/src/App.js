@@ -126,12 +126,20 @@ function App() {
         // TODO: stop assuming access token is always valid
         const user = localStorage.getItem('user')
         if (user) {
-            console.log('[user]', user)
             // set up redux state
             dispatch(set_user(JSON.parse(user)))
             setUser(JSON.parse(user))
         }
-    }, [dispatch])
+
+        const unsubscribe = store.subscribe(() => {
+            const u = store.getState().user
+            setUser(u)
+        })
+
+        return function cleanup() {
+            unsubscribe()
+        }
+    }, [dispatch, store])
 
     return (
         <>
