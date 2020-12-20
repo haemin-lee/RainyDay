@@ -1,14 +1,15 @@
 import DataGrid from 'react-data-grid'
 import '../../../../datagrid_style.css'
 import { TextEditor } from 'react-data-grid'
-import { useEffect, useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import get_client from '../../../../api/finastra'
 import readXlsxFile from 'read-excel-file'
 import { useDropzone } from 'react-dropzone'
-import { useDispatch, useStore } from 'react-redux'
+import { useStore } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import Loader from 'react-loader-spinner'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
+import Prediction from './predictions'
 
 class genericInfo {
     constructor(

@@ -4,18 +4,8 @@ import PlacesAutocomplete from 'react-places-autocomplete'
 import Chip from '@material-ui/core/Chip'
 import get_client from '../../../../api/finastra'
 
-let example_data = [
-    {
-        type: 'Congress',
-        name: 'Congress Bill',
-        link: '#',
-    },
-    {
-        type: 'Fancy',
-        name: 'Some Fancy Bill 2',
-        link: '#',
-    },
-]
+import Loader from 'react-loader-spinner'
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 
 function Bill(props) {
     return (
@@ -63,6 +53,7 @@ function EditModal(props) {
 
         //fetch new data
         async function get_data() {
+            props.isLoading[1](true)
             const client = get_client()
 
             // Parse for zip code
@@ -75,6 +66,7 @@ function EditModal(props) {
             const zip = location.substring(indices[0] + 5, indices[1])
             const d = await client.loans.get_loans(zip)
             props.data[1](d['data']['hit'])
+            props.isLoading[1](false)
         }
         get_data()
 
@@ -200,18 +192,23 @@ function EditModal(props) {
 
 function Loans() {
     const [data, setData] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
     const [workers, setWorkers] = useState(0)
-    const [location, setLocation] = useState('San Bruno, CA')
+    const [location, setLocation] = useState('Los Angeles, CA')
     const [annualRevenue, setAnnualRevenue] = useState(0)
+
     useEffect(() => {
+        get_data()
+
         async function get_data() {
+            setIsLoading(true)
             const client = get_client()
             // hi los angeles :)
             const d = await client.loans.get_loans(90089)
             setData(d['data']['hit'])
+            setIsLoading(false)
         }
-        get_data()
     }, [])
 
     return (
@@ -223,6 +220,7 @@ function Loans() {
                     workers={[workers, setWorkers]}
                     location={[location, setLocation]}
                     annualRevenue={[annualRevenue, setAnnualRevenue]}
+                    isLoading={[isLoading, setIsLoading]}
                     data={[data, setData]}
                 ></EditModal>
             </div>
@@ -233,26 +231,38 @@ function Loans() {
                 <Pill>Revenue: ${annualRevenue}</Pill>
             </div>
             <div style={{ height: 20 }}></div>
-            <table className="table table-bordered">
-                <thead>
-                    <th scope="col">Name</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">City</th>
-                    <th scope="col">Translate</th>
-                </thead>
-                <tbody>
-                    {data.map((b) => {
-                        return (
-                            <Bill
-                                title={b.fields.title}
-                                type={b.fields.office_type}
-                                city={b.fields.location_city}
-                                link={'#'}
-                            />
-                        )
-                    })}
-                </tbody>
-            </table>
+            {isLoading ? (
+                <div className="loader">
+                    <Loader
+                        type="TailSpin"
+                        color="#3b42bf"
+                        height={100}
+                        width={100}
+                        timeout={6000}
+                    />
+                </div>
+            ) : (
+                <table className="table table-bordered">
+                    <thead>
+                        <th scope="col">Name</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">City</th>
+                        <th scope="col">Translate</th>
+                    </thead>
+                    <tbody>
+                        {data.map((b) => {
+                            return (
+                                <Bill
+                                    title={b.fields.title}
+                                    type={b.fields.office_type}
+                                    city={b.fields.location_city}
+                                    link={'#'}
+                                />
+                            )
+                        })}
+                    </tbody>
+                </table>
+            )}
         </div>
     )
 }
