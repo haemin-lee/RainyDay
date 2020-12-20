@@ -1,3 +1,23 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+#root {
+    height: 100%;
+}
+
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
 .loan-pill {
     padding: 15px 10px;
     border: black solid 1px;
@@ -8,7 +28,7 @@
 }
 
 h1 {
-    font-family: Poppins
+    font-family: Poppins;
 }
 
 .navbar.transparent {
@@ -22,12 +42,12 @@ h2 {
     font-weight: 300;
 }
 
-th{
+th {
     font-family: Poppins;
     font-weight: 300;
 }
 
-td{
+td {
     font-family: Poppins;
     font-weight: 300;
 }

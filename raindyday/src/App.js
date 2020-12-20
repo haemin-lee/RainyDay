@@ -8,6 +8,9 @@ import {
 } from 'react-router-dom'
 import { Provider, useDispatch, useStore } from 'react-redux'
 
+import Loader from 'react-loader-spinner'
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
+
 import { Navbar, Nav } from 'react-bootstrap'
 
 import { get_token } from 'finastra-api-client'
@@ -113,7 +116,17 @@ function Login() {
     })
 
     // TODO: Loading screen?
-    return <></>
+    return (
+        <div className="loader">
+            <Loader
+                type="TailSpin"
+                color="#3b42bf"
+                height={100}
+                width={100}
+                timeout={6000}
+            />
+        </div>
+    )
 }
 
 function App() {
@@ -147,7 +160,6 @@ function App() {
                 <Switch>
                     {/* this will probably have some 404 issues later... */}
                     <Route exact path="/login">
-                        <TopNav />
                         <Login />
                     </Route>
 
