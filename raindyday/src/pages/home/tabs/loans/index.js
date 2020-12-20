@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button, Modal, Form } from 'react-bootstrap'
 import PlacesAutocomplete from 'react-places-autocomplete';
+import Chip from '@material-ui/core/Chip';
 
 let example_data = [
     {
@@ -25,10 +26,18 @@ function Bill(props) {
     )
 }
 
+//<div className="loan-pill">{props.children}</div>
+
 function Pill(props) {
     return (
         <div className="d-flex ml-3 mr-3">
-            <div className="loan-pill">{props.children}</div>
+            
+            <Chip
+              
+              size="medium"
+              label={props.children}
+              style={{fontFamily: "Poppins", fontWeight:300}}
+            />
         </div>
     )
 }
@@ -51,7 +60,7 @@ function EditModal() {
 
     return (
         <div>
-          <Button variant="primary" onClick={handleShow}>
+          <Button variant="primary" onClick={handleShow} style={{fontFamily: "Poppins", fontWeight:300, marginTop:8}}>
             Edit
           </Button>
 
@@ -133,21 +142,22 @@ function Loans() {
     return (
         <div>
             <div className="row">
-                <h4>Your Information</h4>
+                <h1 style={{marginLeft:20}}>Your Information</h1>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <EditModal></EditModal>
             </div>
+            <div style={{height:20}}></div>
             <div className="row">
-                <Pill># of workers: {30}</Pill>
+                <Pill>Number of workers: {30}</Pill>
                 <Pill>Location: {'LA, CA'}</Pill>
                 <Pill>Revenue: {'100k annually'}</Pill>
             </div>
-
+            <div style={{height:20}}></div>
             <table className="table table-bordered">
                 <thead>
-                    <th scope="col">Type</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Link to translate</th>
+                    <th scope="col"><h4>Type</h4></th>
+                    <th scope="col"><h4>Name</h4></th>
+                    <th scope="col"><h4>Link to translate</h4></th>
                 </thead>
                 <tbody>
                     {bills.map((b) => {

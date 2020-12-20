@@ -22,6 +22,16 @@ h2 {
     font-weight: 300;
 }
 
+th{
+    font-family: Poppins;
+    font-weight: 300;
+}
+
+td{
+    font-family: Poppins;
+    font-weight: 300;
+}
+
 .dotted-bg {
     max-width: fit-content;
     padding: 72px;
