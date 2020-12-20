@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Modal, Form } from 'react-bootstrap'
 import PlacesAutocomplete from 'react-places-autocomplete';
 import Chip from '@material-ui/core/Chip';
@@ -15,12 +15,14 @@ let example_data = [
         link: '#'
     },
 ]
+import get_client from '../../../../api/finastra'
 
 function Bill(props) {
     return (
         <tr>
+            <td>{props.title}</td>
             <td>{props.type}</td>
-            <td>{props.name}</td>
+            <td>{props.city}</td>
             <td><a href={props.link}>Translation</a></td>
         </tr>
     )
@@ -42,14 +44,7 @@ function Pill(props) {
     )
 }
 
-function handleSubmit() {
-    /* Data is captured but not fully validated or parsed */
-    var workers = document.getElementById("numWorkers").value;
-    var location = document.getElementById("location").value;
-    var annualRevenue = document.getElementById("annualRevenue").value;
-}
-
-function EditModal() {
+function EditModal(props) {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -57,6 +52,33 @@ function EditModal() {
 
     const [search, setSearch] = useState("");
     const handleChange = (searchString) => setSearch(searchString);
+
+    function handleSubmit(e) {
+      const location = document.getElementById("location").value;
+      props.workers[1](Number(document.getElementById("numWorkers").value));
+      props.location[1](location);
+      props.annualRevenue[1](Number(document.getElementById("annualRevenue").value));
+
+      //fetch new data
+      async function get_data() {
+        const client = get_client(); 
+
+        // Parse for zip code
+        var indices = [];
+        var i = 0;
+        while (indices.length != 2) {
+          if (location[i] == ",") indices.push(i);
+          i++;
+        }
+        const zip = location.substring(indices[0]+5, indices[1]);
+        const d = await client.loans.get_loans(zip);
+        props.data[1](d["data"]["hit"]);
+      }
+      get_data()
+
+      e.preventDefault();
+      handleClose();
+    }
 
     return (
         <div>
@@ -76,7 +98,7 @@ function EditModal() {
                   </Form.Group>
 
                 <Form.Group> 
-                <Form.Label>Location</Form.Label>
+                <Form.Label>City (search by zip code)</Form.Label>
                 <PlacesAutocomplete
                     value={search}
                     onChange={handleChange}
@@ -121,7 +143,7 @@ function EditModal() {
                     <Form.Label>Annual Revenue</Form.Label>
                     <Form.Control placeholder="Enter annual revenue" type="number" id="annualRevenue"/>
                   </Form.Group>
-                  <Button variant="primary" type="submit" onClick={handleSubmit}>
+                  <Button variant="primary" type="submit" onClick={(e) => handleSubmit(e)}>
                     Submit
                   </Button>
                 </Form>
@@ -137,35 +159,51 @@ function EditModal() {
 }
 
 function Loans() {
-    const [bills, setBills] = useState(example_data)
+    const [data, setData] = useState([])
+
+    const [workers, setWorkers] = useState(0);
+    const [location, setLocation] = useState("San Bruno, CA");
+    const [annualRevenue, setAnnualRevenue] = useState(0);
+    useEffect(() => {
+      async function get_data() {
+        const client = get_client(); 
+        // hi los angeles :)
+        const d = await client.loans.get_loans(90089);
+        setData(d["data"]["hit"]);
+      }
+      get_data()
+    }, [])
+    
 
     return (
         <div>
             <div className="row">
                 <h1 style={{marginLeft:20}}>Your Information</h1>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <EditModal></EditModal>
+                <EditModal workers={[workers, setWorkers]} location={[location, setLocation]} annualRevenue={[annualRevenue, setAnnualRevenue]} data={[data, setData]}></EditModal>
             </div>
             <div style={{height:20}}></div>
             <div className="row">
-                <Pill>Number of workers: {30}</Pill>
-                <Pill>Location: {'LA, CA'}</Pill>
-                <Pill>Revenue: {'100k annually'}</Pill>
+                <Pill># of workers: {workers}</Pill>
+                <Pill>Location: {location}</Pill>
+                <Pill>Revenue: ${annualRevenue}</Pill>
             </div>
             <div style={{height:20}}></div>
             <table className="table table-bordered">
                 <thead>
-                    <th scope="col"><h4>Type</h4></th>
-                    <th scope="col"><h4>Name</h4></th>
-                    <th scope="col"><h4>Link to translate</h4></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">City</th>
+                    <th scope="col">Translate</th>
                 </thead>
                 <tbody>
-                    {bills.map((b) => {
+                    {data.map((b) => {
                         return (
                             <Bill
-                                type={b.type}
-                                name={b.name}
-                                link={b.link}
+                                title={b.fields.title}
+                                type={b.fields.office_type}
+                                city={b.fields.location_city}
+                                link={"#"}
                             />
                         )
                     })}
