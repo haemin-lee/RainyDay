@@ -161,11 +161,94 @@ function Dashboard() {
     const [isApi, setIsApi] = useState(false)
     const [showAccountModal, setShowAccountModal] = useState(false)
     const [showSliderModal, setShowSliderModal] = useState(false)
+    const [displayGraphs, setDisplayGraphs] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState([])
     const [bankAccounts, setBankAccounts] = useState([])
     const [bankData, setBankData] = useState([])
     const [sliderValues, setSliderValues] = useState(months)
+    const [analysisData, setAnalysisData] = useState([])
+    const [predictNivoData, setPredictNivoData] = useState([])
+    const [oldNivoData, setOldNivoData] = useState([])
+
+        // TODO: move these get_analysis method into dashboard
+    // probably move this into AccountModal onClick anonymous function
+    async function get_analysis() {
+        const client = get_client()
+
+        let transactions = await get_transactions()
+        //TODO: fill this in
+        transactions.vacc_levels = []
+        let analysis = await client.analysis.get_analysis(transactions).data
+        setAnalysisData(analysis)
+    }
+
+    async function get_transactions() {
+        const client = get_client()
+
+        let fromDate = new Date(2020, 0)
+        //had limit=200, at the end
+        const options = {
+            fromDate: fromDate.toISOString().substr(0, 10),
+            toDate: new Date().toISOString().substr(0, 10),
+        }
+
+        const d = await client.account_information.get_account_statement(
+            bankData.id,
+            options
+        )
+
+        return d.data
+    }
+
+    function convert_data_into_nivo_data() {
+        const months = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December',
+        ]
+        let num_months = analysisData.revenues.length
+        let old_num_months = analysisData.past_revs.length
+
+        //graph that is generated from API predictions
+        let predict_nivo_data = []
+        for (let i = 0; i < num_months; i++) {
+            let sample = {
+                month: months[i],
+                revenue: analysisData.revenues[i],
+                cost: analysisData.costs[i],
+                profit: analysisData.profits[i],
+            }
+            predict_nivo_data.push(sample)
+        }
+
+        //graph that is generated from past data
+        let past_nivo_data = []
+        for (let i = 0; i < old_num_months; i++) {
+            let sample = {
+                month: months[i],
+                revenue: analysisData.past_revs[i],
+                cost: analysisData.past_costs[i],
+                profit: analysisData.past_revs[i] - analysisData.past_costs[i],
+            }
+            past_nivo_data.push(sample)
+        }
+        setOldNivoData(past_nivo_data)
+        setPredictNivoData(predict_nivo_data)
+    }
+
+    function reloadData(){
+        convert_data_into_nivo_data(get_analysis())
+    }
 
     function summation(someObj) {
         var object = someObj
@@ -365,11 +448,14 @@ function Dashboard() {
                         show={showAccountModal}
                         onHide={() => {
                             setShowAccountModal(false)
+        
                         }}
                         onClick={(i, bank) => {
                             // TODO: receive finastra financial data
                             setBankData(bank)
                             setShowAccountModal(false)
+                            setDisplayGraphs(true)
+                            reloadData()
                         }}
                     />
 
@@ -387,6 +473,7 @@ function Dashboard() {
                         onSubmit={() => {
                             // TODO: recalculate vaccine level graph thingy
                             setShowSliderModal(false)
+                            reloadData()
                         }}
                     />
                     {/* render grids */}
@@ -472,7 +559,18 @@ function Dashboard() {
                                 </div>
                             </div>
                             {/* TODO: graphs */}
-                            {/*<Prediction data={[]} />*/}
+                            <Prediction
+                                data={oldNivoData}
+                                show={displayGraphs}
+                                title="2020 Data"
+                                ></Prediction>
+                                <Prediction
+                                    data={predictNivoData}
+                                    show={displayGraphs}
+                                    title="Prediction">
+
+                                    </Prediction>
+                             
                         </div>
                     </div>
                 </>
