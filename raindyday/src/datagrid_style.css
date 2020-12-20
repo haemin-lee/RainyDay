@@ -120,12 +120,12 @@
 	--font-size: 14px;
 	contain: strict;
 	contain: size layout style paint;
+	height:400px;
 	content-visibility: auto;
-	height: 400px;
 	border: 1px solid var(--border-color);
 	box-sizing: border-box;
 	overflow-x: auto;
-	overflow-y: hidden;
+	overflow-y: auto;
 	-webkit-user-select: none;
 	user-select: none;
 	background-color: var(--background-color);

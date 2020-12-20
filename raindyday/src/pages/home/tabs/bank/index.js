@@ -47,13 +47,14 @@ const columns = [
     { key: "December", name: "December", editable: true, editor: TextEditor },
 ];
 
+
 // Prob better way to do prop mapping
 function Bank() {
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]);
     const [grid1, setGrid1] = useState(rowsOperatingIncome);
     const [grid2, setGrid2] = useState(rowsCostOfGoodsSold);
     const [grid3, setGrid3] = useState(rowsOperatingCost);
- //  let onRowsChanged = ({ fromRow, toRow, updated }) => {
+
     let onRowsChange1 = ( updatedRows ) => {  
         setGrid1(updatedRows);
     };
@@ -63,7 +64,6 @@ function Bank() {
     let onRowsChange3 = ( updatedRows ) => {  
         setGrid3(updatedRows);
     };
-
 
     useEffect(() => {
         test_api()
@@ -83,6 +83,7 @@ function Bank() {
             setData(data.data)
         }
     }, [])
+
 
 
     return (
