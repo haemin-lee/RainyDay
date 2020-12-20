@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "react-lottie-player": "^1.1.0",
-    "react-places-autocomplete": "^7.3.0"
-  }
-}
