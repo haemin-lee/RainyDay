@@ -44,16 +44,17 @@ function TopNav() {
                     </Nav>
                 ) : (
                     <Nav className="ml-auto">
-                        {/* TODO: update this */}
+                        <Nav.Link href="/">Dashboard</Nav.Link>
+                        <Nav.Link href="/loans">Loans</Nav.Link>
                         <Nav.Link
-                            href="#link"
+                            href="/"
                             onClick={() => {
                                 localStorage.clear()
                                 dispatch(logout_user())
                                 return
                             }}
                         >
-                            {user.firstName} {user.lastName}
+                            Logout
                         </Nav.Link>
                     </Nav>
                 )}
@@ -109,7 +110,6 @@ function App() {
         const user = localStorage.getItem('user')
         if (user) {
             // set up redux state
-            console.log('dispatching...')
             dispatch(set_user(JSON.parse(user)))
             setUser(JSON.parse(user))
         }
@@ -121,25 +121,30 @@ function App() {
     return (
         <>
             <Router>
-                <TopNav />
                 <Switch>
                     {/* this will probably have some 404 issues later... */}
                     <Route exact path="/login">
+                        <TopNav />
                         <Login />
                     </Route>
 
                     <Route exact path="/test">
+                        <TopNav />
                         <Test />
                     </Route>
                     {user ? (
                         // display datas
                         <Route path="/">
+                            <TopNav />
                             <Home />
                         </Route>
                     ) : (
                         // otherwise splash
                         <Route path="/">
-                            <Splash />
+                            <div className="hero">
+                                <TopNav />
+                                <Splash />
+                            </div>
                         </Route>
                     )}
                 </Switch>
