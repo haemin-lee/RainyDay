@@ -219,9 +219,10 @@ function Dashboard() {
         <>
             {!isImported ? (
                 <>
-                    <h2 style={{ marginTop: '30px', marginBottom: '100px' }}>
-                        Hi, {user.firstName}
-                    </h2>
+                    <div style={{ marginTop: '30px', marginBottom: '100px' }}>
+                        <h2 className="mb-3">Hi, {user.firstName}</h2>
+                        <h5>To get started,</h5>
+                    </div>
                     <div
                         {...getRootProps()}
                         className="mb-5 dotted-bg"
