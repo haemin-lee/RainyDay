@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react'
+//import { ResponsiveBar } from '@nivo/bar';
+import Slider from '@material-ui/core/Slider';
+
 import get_client from '../../../../api/finastra'
 
 
@@ -14,7 +17,7 @@ function Predictions(props) {
         let transactions = await get_transactions()
         //TODO: fill this in
         transactions.vacc_levels = []
-        let analysis = await client.analysis.get_analysis(transactions)
+        let analysis = await client.analysis.get_analysis(transactions).data
         setData(analysis)
     }
 
@@ -36,7 +39,20 @@ function Predictions(props) {
         return d.data;
     }
 
-    return <div>{data.fixed_cost_mo}</div>
+    return <div>
+            <div>
+                <div>January</div><Slider></Slider>
+                <div>February</div><Slider></Slider>
+                <div>March</div><Slider></Slider>
+                <div>April</div><Slider></Slider>
+                <div>May</div><Slider></Slider>
+                <div>June</div><Slider></Slider>
+                
+            </div>
+            <div>
+
+            </div>
+        </div>
 }
 
 export default Predictions
