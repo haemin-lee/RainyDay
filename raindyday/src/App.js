@@ -8,6 +8,9 @@ import {
 } from 'react-router-dom'
 import { Provider, useDispatch, useStore } from 'react-redux'
 
+import Loader from 'react-loader-spinner'
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
+
 import { Navbar, Nav } from 'react-bootstrap'
 
 import { get_token } from 'finastra-api-client'
@@ -18,28 +21,46 @@ import { set_user, logout_user } from './redux/actions/user'
 import Splash from './pages/splash'
 import Home from './pages/home'
 import Test from './pages/test'
+import dino from './logo.png'
 
-function TopNav() {
-    const store = useStore()
+function TopNav(props) {
     const dispatch = useDispatch()
-
-    const [user, setUser] = useState(null)
-
-    store.subscribe(() => {
-        const u = store.getState().user
-        if (Object.keys(u).length) setUser(store.getState().user)
-        else setUser(null)
-    })
-
     return (
         <div className="navbar navbar-expand-lg navbar-light navbar-transparent">
-            <Navbar.Brand href="/">Welcome_Beemo</Navbar.Brand>
+            <Navbar.Brand href="/">
+                <img
+                    src={dino}
+                    width="50"
+                    height="60"
+                    alt=""
+                    style={{ float: 'left' }}
+                />
+                <p
+                    style={{
+                        fontFamily: 'Poppins',
+                        float: 'left',
+                        marginTop: 10,
+                        color: !props.user ? 'white' : '#343a40',
+                    }}
+                >
+                    Rainy Day
+                </p>
+            </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-                {!user ? (
+                {!props.user ? (
                     <Nav className="ml-auto">
                         <Nav.Link href="https://api.fusionfabric.cloud/login/v1/sandbox/oidc/authorize?response_type=code&client_id=385ae539-8678-4e84-a352-a30b0114296c&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin">
-                            Sign in
+                            <p
+                                style={{
+                                    fontFamily: 'Poppins',
+                                    float: 'left',
+                                    marginTop: 10,
+                                    color: !props.user ? 'white' : '#343a40',
+                                }}
+                            >
+                                Sign in
+                            </p>
                         </Nav.Link>
                     </Nav>
                 ) : (
@@ -48,13 +69,12 @@ function TopNav() {
                         <Nav.Link href="/loans">Loans</Nav.Link>
                         <Nav.Link
                             href="/"
-                            onClick={() => {
+                            onClick={(e) => {
                                 localStorage.clear()
                                 dispatch(logout_user())
-                                return
                             }}
                         >
-                            Logout
+                            Logout {props.user.firstName}
                         </Nav.Link>
                     </Nav>
                 )}
@@ -96,7 +116,17 @@ function Login() {
     })
 
     // TODO: Loading screen?
-    return <></>
+    return (
+        <div className="loader">
+            <Loader
+                type="TailSpin"
+                color="#3b42bf"
+                height={100}
+                width={100}
+                timeout={6000}
+            />
+        </div>
+    )
 }
 
 function App() {
@@ -113,7 +143,16 @@ function App() {
             dispatch(set_user(JSON.parse(user)))
             setUser(JSON.parse(user))
         }
-    }, [setUser])
+
+        const unsubscribe = store.subscribe(() => {
+            const u = store.getState().user
+            setUser(u)
+        })
+
+        return function cleanup() {
+            unsubscribe()
+        }
+    }, [dispatch, store])
 
     return (
         <>
@@ -121,18 +160,17 @@ function App() {
                 <Switch>
                     {/* this will probably have some 404 issues later... */}
                     <Route exact path="/login">
-                        <TopNav />
                         <Login />
                     </Route>
 
                     <Route exact path="/test">
-                        <TopNav />
+                        <TopNav user={user} />
                         <Test />
                     </Route>
                     {user ? (
                         // display datas
                         <Route path="/">
-                            <TopNav />
+                            <TopNav user={user} />
                             <Home />
                         </Route>
                     ) : (
