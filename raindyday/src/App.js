@@ -115,7 +115,6 @@ function Login() {
         }
     })
 
-    // TODO: Loading screen?
     return (
         <div className="loader">
             <Loader

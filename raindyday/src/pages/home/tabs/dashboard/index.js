@@ -7,6 +7,8 @@ import readXlsxFile from 'read-excel-file'
 import { useDropzone } from 'react-dropzone'
 import { useDispatch, useStore } from 'react-redux'
 import Button from '@material-ui/core/Button'
+import Loader from 'react-loader-spinner'
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 
 class genericInfo {
     constructor(
@@ -62,12 +64,95 @@ const columns = [
     { key: 'December', name: 'December', editable: true, editor: TextEditor },
 ]
 
+const finastra_columns = [
+    {
+        key: 'postingDate',
+        name: 'Posting Date',
+    },
+    {
+        key: 'valueDate',
+        name: 'Value Date',
+    },
+    {
+        key: 'currency',
+        name: 'Currency',
+    },
+    {
+        key: 'amount',
+        name: 'Amount',
+    },
+    {
+        key: 'transactionType',
+        name: 'Type',
+    },
+    {
+        key: 'balance',
+        name: 'Balance',
+    },
+]
+
+function Account(props) {
+    const [data, setData] = useState([])
+
+    async function get_data() {
+        const client = get_client()
+
+        let fromDate = new Date()
+        fromDate.setFullYear(fromDate.getFullYear() - 1)
+
+        const options = {
+            fromDate: fromDate.toISOString().substr(0, 10),
+            toDate: new Date().toISOString().substr(0, 10),
+            limit: 200,
+        }
+
+        const d = await client.account_information.get_account_statement(
+            props.data.id,
+            options
+        )
+
+        setData(d.data.items)
+    }
+
+    return (
+        <div id={props.data.id}>
+            <div className="card">
+                <div className="card-header">
+                    <button
+                        className="btn btn-link"
+                        data-toggle="collapse"
+                        data-target={'#collapse-' + props.data.id}
+                        onClick={get_data}
+                    >
+                        {props.data.bankShortName} | {props.data.number} |{' '}
+                        {props.data.type}
+                    </button>
+                </div>
+                <div
+                    id={'collapse-' + props.data.id}
+                    className="collapse close"
+                    data-parent={'#' + props.data.id}
+                >
+                    <div className="card-body">
+                        <p>{props.data.bankShortName}</p>
+                        <p>{props.data.type}</p>
+                        <p>{props.data.number}</p>
+                        <DataGrid columns={finastra_columns} rows={data} />
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 function Dashboard() {
     const store = useStore()
 
     const user = store.getState().user
 
     const [isImported, setIsImported] = useState(false)
+    const [isApi, setIsApi] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState([])
 
     function summation(someObj) {
@@ -114,9 +199,6 @@ function Dashboard() {
             array.push(newClass)
         }
         return array
-        // setGrid1(overallSummation(array0))
-        // setGrid2(overallSummation(array1))
-        // setGrid3(overallSummation(array2))
     }
 
     function addingRow(i) {
@@ -143,6 +225,8 @@ function Dashboard() {
     }
 
     const onDrop = useCallback(async (acceptedFiles) => {
+        setIsLoading(true)
+
         const file = acceptedFiles[0]
         const sheets = await readXlsxFile(file, { getSheets: true })
         let grids = []
@@ -154,6 +238,7 @@ function Dashboard() {
         }
         setData(grids)
         setIsImported(true)
+        setIsLoading(false)
     }, [])
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -166,6 +251,45 @@ function Dashboard() {
         console.log(grids[i])
         setData(grids)
     }
+
+    async function get_data() {
+        setIsLoading(true)
+        const options = {
+            accountContext: 'VIEW-ACCOUNT',
+        }
+
+        const client = get_client()
+
+        const d = await client.account_information.get_accounts_information(
+            options
+        )
+
+        let obj = []
+        for (const account of d.data.items) {
+            const id = account.id
+            const info = await client.account_information.get_account(id)
+            obj.push(info.data)
+        }
+
+        setData(obj)
+        setIsApi(true)
+        setIsImported(true)
+        setIsLoading(false)
+    }
+
+    // load for max 12s
+    if (isLoading)
+        return (
+            <div className="loader">
+                <Loader
+                    type="TailSpin"
+                    color="#3b42bf"
+                    height={100}
+                    width={100}
+                    timeout={12000}
+                />
+            </div>
+        )
 
     return (
         <>
@@ -206,33 +330,53 @@ function Dashboard() {
                     <div className="text-center">
                         <p>or</p>
                         <p>
-                            <a href="#">Pull data from Finastra</a>
+                            <button className="btn btn-link" onClick={get_data}>
+                                Pull data from Finastra
+                            </button>
                         </p>
+                    </div>
+                </>
+            ) : !isApi ? (
+                <>
+                    {/* render grids */}
+                    <div className="row">
+                        <div className="col-6">
+                            {data.map((grid, i) => {
+                                return (
+                                    <>
+                                        <DataGrid
+                                            columns={columns}
+                                            rows={grid}
+                                            onRowsChange={(updatedRows) =>
+                                                onRowsChange(i, updatedRows)
+                                            }
+                                            enableCellSelect={true}
+                                        />
+                                        <Button
+                                            onClick={() => {
+                                                addingRow(i)
+                                            }}
+                                        >
+                                            Add a New Row!
+                                        </Button>
+                                    </>
+                                )
+                            })}
+                        </div>
+                        {/* graphs */}
+                        <div className="col-6"></div>
                     </div>
                 </>
             ) : (
                 <>
-                    {data.map((grid, i) => {
-                        return (
-                            <>
-                                <DataGrid
-                                    columns={columns}
-                                    rows={grid}
-                                    onRowsChange={(updatedRows) =>
-                                        onRowsChange(i, updatedRows)
-                                    }
-                                    enableCellSelect={true}
-                                />
-                                <Button
-                                    onClick={() => {
-                                        addingRow(i)
-                                    }}
-                                >
-                                    Add a New Row!
-                                </Button>
-                            </>
-                        )
-                    })}
+                    <div className="row">
+                        <div className="col-6">
+                            {data.map((grid) => {
+                                return <Account data={grid} />
+                            })}
+                        </div>
+                        <div className="col-6"></div>
+                    </div>
                 </>
             )}
         </>
