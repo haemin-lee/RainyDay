@@ -11,12 +11,24 @@ function Predictions(props) {
     // if not loading data inside component, then turn these into props instead
     const [isLoading, setIsLoading] = useState(false)
 
-    
+    const months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+    ]
 
 
 
-
-    if (isLoading)
+    if (!props.show)
         return (
             <div className="loader">
                 <Loader
@@ -29,8 +41,8 @@ function Predictions(props) {
             </div>
         )
     return (
-        <div show={props.show}>
-          <div>hello biiiiitch</div>
+        <div style={{height: "500px"}}>
+            <div>{props.title}</div>
         <ResponsiveBar
             data={props.data}
             keys={['revenue', 'cost', 'profit']}
@@ -61,20 +73,6 @@ function Predictions(props) {
                     spacing: 10,
                 },
             ]}
-            fill={[
-                {
-                    match: {
-                        id: 'fries',
-                    },
-                    id: 'dots',
-                },
-                {
-                    match: {
-                        id: 'sandwich',
-                    },
-                    id: 'lines',
-                },
-            ]}
             borderColor={{
                 from: 'color',
                 modifiers: [['darker', 1.6]],
@@ -85,7 +83,7 @@ function Predictions(props) {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: 'country',
+                legend: 'month',
                 legendPosition: 'middle',
                 legendOffset: 32,
             }}
@@ -93,7 +91,7 @@ function Predictions(props) {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: 'food',
+                legend: 'Dollars',
                 legendPosition: 'middle',
                 legendOffset: -40,
             }}
@@ -105,7 +103,7 @@ function Predictions(props) {
             }}
             legends={[
                 {
-                    dataFrom: 'keys',
+                    dataFrom: months,
                     anchor: 'bottom-right',
                     direction: 'column',
                     justify: false,
@@ -133,6 +131,7 @@ function Predictions(props) {
         />
         </div>
     )
+    
 }
 
 export default Predictions

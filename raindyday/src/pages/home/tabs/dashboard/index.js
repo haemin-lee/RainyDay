@@ -11,7 +11,8 @@ import Loader from 'react-loader-spinner'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import { AccountModal, SliderModal } from './modal'
 import Prediction from './predictions'
-
+let curr_id = 0
+let penny = []
 class genericInfo {
     constructor(
         Name,
@@ -167,41 +168,56 @@ function Dashboard() {
     const [bankAccounts, setBankAccounts] = useState([])
     const [bankData, setBankData] = useState([])
     const [sliderValues, setSliderValues] = useState(months)
-    const [analysisData, setAnalysisData] = useState([])
     const [predictNivoData, setPredictNivoData] = useState([])
     const [oldNivoData, setOldNivoData] = useState([])
+    const [ids, setIds] = useState([])
 
         // TODO: move these get_analysis method into dashboard
     // probably move this into AccountModal onClick anonymous function
     async function get_analysis() {
         const client = get_client()
 
-        let transactions = await get_transactions()
-        //TODO: fill this in
-        transactions.vacc_levels = []
-        let analysis = await client.analysis.get_analysis(transactions).data
-        setAnalysisData(analysis)
+        const transactionData = await get_transactions()
+        console.log(transactionData) 
+        let analysis_input = {
+            data: transactionData,
+            vacc_levels: sliderValues
+        }    
+        let analysisData = await client.analyze.get_analysis(analysis_input)
+        analysisData = analysisData.data
+        console.log(analysisData)
+        return analysisData
+        
+        
     }
 
     async function get_transactions() {
         const client = get_client()
 
         let fromDate = new Date(2020, 0)
-        //had limit=200, at the end
+
         const options = {
             fromDate: fromDate.toISOString().substr(0, 10),
             toDate: new Date().toISOString().substr(0, 10),
         }
 
         const d = await client.account_information.get_account_statement(
-            bankData.id,
+            curr_id,
             options
         )
-
-        return d.data
+        return d.data.items
     }
 
-    function convert_data_into_nivo_data() {
+    // function convert_data_into_nivo_data() {
+        
+    // }
+
+    async function reloadData(){
+        const analysis_Data = await get_analysis()
+
+        console.log(analysis_Data)
+
+        let analysisData = JSON.parse(analysis_Data)
         const months = [
             'January',
             'February',
@@ -244,10 +260,8 @@ function Dashboard() {
         }
         setOldNivoData(past_nivo_data)
         setPredictNivoData(predict_nivo_data)
-    }
-
-    function reloadData(){
-        convert_data_into_nivo_data(get_analysis())
+        setDisplayGraphs(true)
+    
     }
 
     function summation(someObj) {
@@ -362,11 +376,14 @@ function Dashboard() {
         )
 
         let obj = []
+        let ids = []
         for (const account of d.data.items) {
             const id = account.id
+            ids.push(id)
             const info = await client.account_information.get_account(id)
             obj.push(info.data)
         }
+        setIds(ids)
 
         if (get_bank_accounts) setBankAccounts(obj)
         else {
@@ -453,6 +470,8 @@ function Dashboard() {
                         onClick={(i, bank) => {
                             // TODO: receive finastra financial data
                             setBankData(bank)
+                            penny = bank
+                            curr_id = "11"
                             setShowAccountModal(false)
                             setDisplayGraphs(true)
                             reloadData()
