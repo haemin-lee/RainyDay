@@ -9,4 +9,5 @@ export default {
     authorize_path: process.env.authorize_path,
     redirect_uri: process.env.redirect_uri,
     db_connection_url: process.env.db_connection_url,
+    FLASK_PORT: process.env.FLASK_PORT,
 }

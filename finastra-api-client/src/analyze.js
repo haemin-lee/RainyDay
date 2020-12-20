@@ -3,10 +3,10 @@
 module.exports = (instance, options = {}) => {
     const url = options.server_url + '/api'
 
-    async function get_analysis() {
+    async function get_analysis(data) {
         const uri = '/analyze'
 
-        const res = await instance.get(url + uri)
+        const res = await instance.post(url + uri, data)
 
         return res
     }
