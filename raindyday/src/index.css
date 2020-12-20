@@ -8,7 +8,7 @@
 }
 
 h1 {
-    font-family: Poppins;
+    font-family: Poppins
 }
 
 .navbar.transparent {
@@ -19,6 +19,7 @@ h1 {
 
 h2 {
     font-family: Poppins;
+    font-weight: 300;
 }
 
 .dotted-bg {

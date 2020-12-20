@@ -13,12 +13,14 @@ function Splash() {
 			    		</Row>
 			    		<Row>
 			    			<div className="text">
-				                <h2 style={{fontSize: 40, textAlign: "left"}}>
+				                <h1 style={{fontSize: 40, textAlign: "left"}}>
 				                	Welcome to  
-				                </h2>
+				                </h1>
 				                <h1 style={{fontSize: 80, color:"#FC94AF", textAlign: "left"}}>
 				               		Rainy Day
 				                </h1>
+				                <div style={{height:40}}>
+				                </div>
 				                <Typist>
 				                	<h2 style={{ textAlign: "left"}}>
 										<span> 
