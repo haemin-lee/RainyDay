@@ -8,7 +8,7 @@
 }
 
 h1 {
-    font-family: Poppins;
+    font-family: Poppins
 }
 
 .navbar.transparent {
@@ -17,6 +17,34 @@ h1 {
     background-color: rgba(0, 0, 0, 0);
 }
 
-h2{
-	font-family: Poppins;
+h2 {
+    font-family: Poppins;
+    font-weight: 300;
+}
+
+th{
+    font-family: Poppins;
+    font-weight: 300;
+}
+
+td{
+    font-family: Poppins;
+    font-weight: 300;
+}
+
+.dotted-bg {
+    max-width: fit-content;
+    padding: 72px;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='31' ry='31' stroke='black' stroke-width='8' stroke-dasharray='27' stroke-dashoffset='10' stroke-linecap='square'/%3e%3c/svg%3e");
+    border-radius: 31px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s all ease;
+}
+
+.dotted-bg:hover {
+    transition: 0.3s all ease;
+    transform: scale(1.1);
 }
