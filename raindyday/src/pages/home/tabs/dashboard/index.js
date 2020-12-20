@@ -68,9 +68,7 @@ function Dashboard() {
     const user = store.getState().user
 
     const [isImported, setIsImported] = useState(false)
-    const [grid1, setGrid1] = useState([])
-    const [grid2, setGrid2] = useState([])
-    const [grid3, setGrid3] = useState([])
+    const [data, setData] = useState([])
 
     function summation(someObj) {
         var object = someObj
@@ -93,12 +91,10 @@ function Dashboard() {
     }
 
     function parseExcel(someExcel) {
-        var i = 0
-        var array0 = [],
-            array1 = [],
-            array2 = []
-        for (i = 0; i < someExcel.length; i++) {
-            var newClass = new genericInfo(
+        let array = []
+        for (let i = 0; i < someExcel.length; i++) {
+            const newClass = new genericInfo(
+                someExcel[i][0],
                 someExcel[i][1],
                 someExcel[i][2],
                 someExcel[i][3],
@@ -115,104 +111,60 @@ function Dashboard() {
                 someExcel[i][14],
                 someExcel[i][15]
             )
-            if (0 == someExcel[i][0]) {
-                array0.push(newClass)
-            } else if (1 == someExcel[i][0]) {
-                array1.push(newClass)
-            } else if (2 == someExcel[i][0]) {
-                array2.push(newClass)
-            }
+            array.push(newClass)
         }
-        setGrid1(overallSummation(array0))
-        setGrid2(overallSummation(array1))
-        setGrid3(overallSummation(array2))
+        return array
+        // setGrid1(overallSummation(array0))
+        // setGrid2(overallSummation(array1))
+        // setGrid3(overallSummation(array2))
+    }
+
+    function addingRow(i) {
+        const newClass = new genericInfo(
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            ''
+        )
+        let othergrid = [...data]
+        othergrid[i].push(newClass)
+        setData(othergrid)
+    }
+
+    const onDrop = useCallback(async (acceptedFiles) => {
+        const file = acceptedFiles[0]
+        const sheets = await readXlsxFile(file, { getSheets: true })
+        let grids = []
+        for (const sheet of sheets) {
+            const rows = await readXlsxFile(file, { sheet: sheet.name })
+            let grid = overallSummation(parseExcel(rows))
+            console.log(grid)
+            grids.push(grid)
+        }
+        setData(grids)
         setIsImported(true)
-    }
-
-    function addingRow1() {
-        var newClass = new genericInfo(
-            'NewRow',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            ''
-        )
-        var othergrid = [...grid1]
-        othergrid.push(newClass)
-        setGrid1(othergrid)
-    }
-
-    function addingRow2() {
-        var newClass = new genericInfo(
-            'NewRow',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            ''
-        )
-        grid2.push(newClass)
-        setGrid2(grid2)
-    }
-
-    function addingRow3() {
-        var newClass = new genericInfo(
-            'NewRow',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            ''
-        )
-        grid3.push(newClass)
-        setGrid3(grid3)
-    }
-
-    const onDrop = useCallback((acceptedFiles) => {
-        readXlsxFile(acceptedFiles[0]).then((rows) => {
-            parseExcel(rows)
-        })
     }, [])
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
     })
-    let onRowsChangeOperatingIncome = (updatedRows) => {
-        setGrid1(overallSummation(updatedRows))
-    }
-    let onRowsChangeCostGoodsSold = (updatedRows) => {
-        setGrid2(overallSummation(updatedRows))
-    }
-    let onRowsChangeOperatingCost = (updatedRows) => {
-        setGrid3(overallSummation(updatedRows))
+
+    let onRowsChange = (i, updatedRows) => {
+        let grids = [...data]
+        grids[i] = overallSummation(updatedRows)
+        console.log(grids[i])
+        setData(grids)
     }
 
     return (
@@ -260,45 +212,27 @@ function Dashboard() {
                 </>
             ) : (
                 <>
-                    <DataGrid
-                        columns={columns}
-                        rows={grid1}
-                        onRowsChange={onRowsChangeOperatingIncome}
-                        enableCellSelect={true}
-                    />
-                    <Button
-                        onClick={() => {
-                            addingRow1()
-                        }}
-                    >
-                        Add a New Row!
-                    </Button>
-                    <DataGrid
-                        columns={columns}
-                        rows={grid2}
-                        onRowsChange={onRowsChangeCostGoodsSold}
-                        enableCellSelect={true}
-                    />
-                    <Button
-                        onClick={() => {
-                            addingRow2()
-                        }}
-                    >
-                        Add a New Row!
-                    </Button>
-                    <DataGrid
-                        columns={columns}
-                        rows={grid3}
-                        onRowsChange={onRowsChangeOperatingCost}
-                        enableCellSelect={true}
-                    />
-                    <Button
-                        onClick={() => {
-                            addingRow3()
-                        }}
-                    >
-                        Add a New Row!
-                    </Button>
+                    {data.map((grid, i) => {
+                        return (
+                            <>
+                                <DataGrid
+                                    columns={columns}
+                                    rows={grid}
+                                    onRowsChange={(updatedRows) =>
+                                        onRowsChange(i, updatedRows)
+                                    }
+                                    enableCellSelect={true}
+                                />
+                                <Button
+                                    onClick={() => {
+                                        addingRow(i)
+                                    }}
+                                >
+                                    Add a New Row!
+                                </Button>
+                            </>
+                        )
+                    })}
                 </>
             )}
         </>
