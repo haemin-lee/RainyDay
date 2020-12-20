@@ -20,33 +20,43 @@ import Home from './pages/home'
 import Test from './pages/test'
 import dino from './logo.png'
 
-function TopNav() {
-    const store = useStore()
+function TopNav(props) {
     const dispatch = useDispatch()
-
-    const [user, setUser] = useState(null)
-
-    store.subscribe(() => {
-        const u = store.getState().user
-        if (Object.keys(u).length) setUser(store.getState().user)
-        else setUser(null)
-    })
-
     return (
         <div className="navbar navbar-expand-lg navbar-light navbar-transparent">
             <Navbar.Brand href="/">
-            <img src={dino} width="50" height="60" alt="" style={{float:"left"}} />
-            <p style={{fontFamily: "Poppins", float:"left", marginTop:10, color:"white"}}>
-            Rainy Day
-            </p>
+                <img
+                    src={dino}
+                    width="50"
+                    height="60"
+                    alt=""
+                    style={{ float: 'left' }}
+                />
+                <p
+                    style={{
+                        fontFamily: 'Poppins',
+                        float: 'left',
+                        marginTop: 10,
+                        color: !props.user ? 'white' : '#343a40',
+                    }}
+                >
+                    Rainy Day
+                </p>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-                {!user ? (
+                {!props.user ? (
                     <Nav className="ml-auto">
                         <Nav.Link href="https://api.fusionfabric.cloud/login/v1/sandbox/oidc/authorize?response_type=code&client_id=385ae539-8678-4e84-a352-a30b0114296c&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin">
-                            <p style={{fontFamily: "Poppins", float:"left", marginTop:10, color:"white"}}>
-                            Sign in
+                            <p
+                                style={{
+                                    fontFamily: 'Poppins',
+                                    float: 'left',
+                                    marginTop: 10,
+                                    color: !props.user ? 'white' : '#343a40',
+                                }}
+                            >
+                                Sign in
                             </p>
                         </Nav.Link>
                     </Nav>
@@ -56,13 +66,12 @@ function TopNav() {
                         <Nav.Link href="/loans">Loans</Nav.Link>
                         <Nav.Link
                             href="/"
-                            onClick={() => {
+                            onClick={(e) => {
                                 localStorage.clear()
                                 dispatch(logout_user())
-                                return
                             }}
                         >
-                            Logout {user.firstName}
+                            Logout {props.user.firstName}
                         </Nav.Link>
                     </Nav>
                 )}
@@ -117,11 +126,12 @@ function App() {
         // TODO: stop assuming access token is always valid
         const user = localStorage.getItem('user')
         if (user) {
+            console.log('[user]', user)
             // set up redux state
             dispatch(set_user(JSON.parse(user)))
             setUser(JSON.parse(user))
         }
-    }, [setUser])
+    }, [dispatch])
 
     return (
         <>
@@ -134,13 +144,13 @@ function App() {
                     </Route>
 
                     <Route exact path="/test">
-                        <TopNav />
+                        <TopNav user={user} />
                         <Test />
                     </Route>
                     {user ? (
                         // display datas
                         <Route path="/">
-                            <TopNav />
+                            <TopNav user={user} />
                             <Home />
                         </Route>
                     ) : (
