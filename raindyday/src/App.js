@@ -18,6 +18,7 @@ import { set_user, logout_user } from './redux/actions/user'
 import Splash from './pages/splash'
 import Home from './pages/home'
 import Test from './pages/test'
+import dino from './logo.png'
 
 function TopNav() {
     const store = useStore()
