@@ -1,11 +1,11 @@
 import DataGrid from 'react-data-grid'
-// import 'react-data-grid/dist/react-data-grid.css';
 import '../../../../datagrid_style.css'
 import { TextEditor } from 'react-data-grid'
 import { useEffect, useState, useCallback } from 'react'
 import get_client from '../../../../api/finastra'
 import readXlsxFile from 'read-excel-file'
 import { useDropzone } from 'react-dropzone'
+import { useDispatch, useStore } from 'react-redux'
 import Button from '@material-ui/core/Button'
 
 class genericInfo {
@@ -44,213 +44,6 @@ class genericInfo {
     }
 }
 
-let rowsOperatingIncome = [
-    {
-        Name: 'Sales',
-        Expected: 200,
-        Total: 300,
-        January: 100,
-        February: 100,
-        March: 100,
-        April: 100,
-        May: 100,
-        June: 100,
-        July: 100,
-        August: 100,
-        July: 100,
-        September: 100,
-        October: 100,
-        November: 100,
-        December: 100,
-    },
-    {
-        Name: 'Service',
-        Expected: 1000,
-        Total: 800,
-        January: 100,
-        February: 100,
-        March: 100,
-        April: 100,
-        May: 100,
-        June: 100,
-        July: 100,
-        August: 100,
-        July: 100,
-        September: 100,
-        October: 100,
-        November: 100,
-        December: 100,
-    },
-]
-
-let rowsCostOfGoodsSold = [
-    {
-        Name: 'Detergent Sold',
-        Expected: 200,
-        Total: 300,
-        January: 100,
-        February: 100,
-        March: 100,
-        April: 100,
-        May: 100,
-        June: 100,
-        July: 100,
-        August: 100,
-        July: 100,
-        September: 100,
-        October: 100,
-        November: 100,
-        December: 100,
-    },
-    {
-        Name: 'Human Labor',
-        Expected: 1000,
-        Total: 800,
-        January: 100,
-        February: 100,
-        March: 100,
-        April: 100,
-        May: 100,
-        June: 100,
-        July: 100,
-        August: 100,
-        July: 100,
-        September: 100,
-        October: 100,
-        November: 100,
-        December: 100,
-    },
-]
-
-let rowsOperatingCost = [
-    {
-        Name: 'Electricity',
-        Expected: 200,
-        Total: 300,
-        January: 100,
-        February: 100,
-        March: 100,
-        April: 100,
-        May: 100,
-        June: 100,
-        July: 100,
-        August: 100,
-        July: 100,
-        September: 100,
-        October: 100,
-        November: 100,
-        December: 100,
-    },
-    {
-        Name: 'Gas',
-        Expected: 1000,
-        Total: 800,
-        January: 100,
-        February: 100,
-        March: 100,
-        April: 100,
-        May: 100,
-        June: 100,
-        July: 100,
-        August: 100,
-        July: 100,
-        September: 100,
-        October: 100,
-        November: 100,
-        December: 100,
-    },
-    {
-        Name: 'Rent',
-        Expected: 200,
-        Total: 300,
-        January: 100,
-        February: 100,
-        March: 100,
-        April: 100,
-        May: 100,
-        June: 100,
-        July: 100,
-        August: 100,
-        July: 100,
-        September: 100,
-        October: 100,
-        November: 100,
-        December: 100,
-    },
-    {
-        Name: 'Water',
-        Expected: 1000,
-        Total: 800,
-        January: 100,
-        February: 100,
-        March: 100,
-        April: 100,
-        May: 100,
-        June: 100,
-        July: 100,
-        August: 100,
-        July: 100,
-        September: 100,
-        October: 100,
-        November: 100,
-        December: 100,
-    },
-    {
-        Name: 'Insurance',
-        Expected: 200,
-        Total: 300,
-        January: 100,
-        February: 100,
-        March: 100,
-        April: 100,
-        May: 100,
-        June: 100,
-        July: 100,
-        August: 100,
-        July: 100,
-        September: 100,
-        October: 100,
-        November: 100,
-        December: 100,
-    },
-    {
-        Name: 'Advertising',
-        Expected: 1000,
-        Total: 800,
-        January: 100,
-        February: 100,
-        March: 100,
-        April: 100,
-        May: 100,
-        June: 100,
-        July: 100,
-        August: 100,
-        July: 100,
-        September: 100,
-        October: 100,
-        November: 100,
-        December: 100,
-    },
-    {
-        Name: 'Repair',
-        Expected: 200,
-        Total: 300,
-        January: 100,
-        February: 100,
-        March: 100,
-        April: 100,
-        May: 100,
-        June: 100,
-        July: 100,
-        August: 100,
-        July: 100,
-        September: 100,
-        October: 100,
-        November: 100,
-        December: 100,
-    },
-]
-
 const columns = [
     { key: 'Name', name: 'Name', editable: true, editor: TextEditor },
     { key: 'Expected', name: 'Expected', editable: true, editor: TextEditor },
@@ -270,14 +63,14 @@ const columns = [
 ]
 
 function Dashboard() {
-    // // Prob better way to do prop mapping
-    rowsOperatingIncome = overallSummation(rowsOperatingIncome)
-    rowsCostOfGoodsSold = overallSummation(rowsCostOfGoodsSold)
-    rowsOperatingCost = overallSummation(rowsOperatingCost)
-    const [data, setData] = useState([])
-    const [grid1, setGrid1] = useState(rowsOperatingIncome)
-    const [grid2, setGrid2] = useState(rowsCostOfGoodsSold)
-    const [grid3, setGrid3] = useState(rowsOperatingCost)
+    const store = useStore()
+
+    const user = store.getState().user
+
+    const [isImported, setIsImported] = useState(false)
+    const [grid1, setGrid1] = useState([])
+    const [grid2, setGrid2] = useState([])
+    const [grid3, setGrid3] = useState([])
 
     function summation(someObj) {
         var object = someObj
@@ -333,6 +126,7 @@ function Dashboard() {
         setGrid1(overallSummation(array0))
         setGrid2(overallSummation(array1))
         setGrid3(overallSummation(array2))
+        setIsImported(true)
     }
 
     function addingRow1() {
@@ -422,58 +216,92 @@ function Dashboard() {
     }
 
     return (
-        <div>
-            <div {...getRootProps()}>
-                <input {...getInputProps()} />
-                {isDragActive ? (
-                    <p>Drop the files here ...</p>
-                ) : (
-                    <p>Import your excel file here!</p>
-                )}
-            </div>
-            <h2>Operating Income</h2>
-            <DataGrid
-                columns={columns}
-                rows={grid1}
-                onRowsChange={onRowsChangeOperatingIncome}
-                enableCellSelect={true}
-            />
-            <Button
-                onClick={() => {
-                    addingRow1()
-                }}
-            >
-                Add a New Row!
-            </Button>
-            <h2>Cost of Goods Sold</h2>
-            <DataGrid
-                columns={columns}
-                rows={grid2}
-                onRowsChange={onRowsChangeCostGoodsSold}
-                enableCellSelect={true}
-            />
-            <Button
-                onClick={() => {
-                    addingRow2()
-                }}
-            >
-                Add a New Row!
-            </Button>
-            <h2>Operating Cost</h2>
-            <DataGrid
-                columns={columns}
-                rows={grid3}
-                onRowsChange={onRowsChangeOperatingCost}
-                enableCellSelect={true}
-            />
-            <Button
-                onClick={() => {
-                    addingRow3()
-                }}
-            >
-                Add a New Row!
-            </Button>
-        </div>
+        <>
+            {!isImported ? (
+                <>
+                    <div style={{ marginTop: '30px', marginBottom: '100px' }}>
+                        <h2 className="mb-3">Hi, {user.firstName}</h2>
+                        <h5>To get started,</h5>
+                    </div>
+                    <div
+                        {...getRootProps()}
+                        className="mb-5 dotted-bg"
+                        style={{ display: 'block', margin: '0 auto' }}
+                    >
+                        <input {...getInputProps()} />
+                        <div className="text-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="128"
+                                height="128"
+                                fill="currentColor"
+                                class="bi bi-cloud-upload-fill"
+                                viewBox="0 0 16 16"
+                                className="mb-2"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M8 0a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 4.095 0 5.555 0 7.318 0 9.366 1.708 11 3.781 11H7.5V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11h4.188C14.502 11 16 9.57 16 7.773c0-1.636-1.242-2.969-2.834-3.194C12.923 1.999 10.69 0 8 0zm-.5 14.5V11h1v3.5a.5.5 0 0 1-1 0z"
+                                />
+                            </svg>
+                            {isDragActive ? (
+                                <p>Drop the files here ...</p>
+                            ) : (
+                                <p>Upload a spreadsheet</p>
+                            )}
+                        </div>
+                    </div>
+                    <div className="text-center">
+                        <p>or</p>
+                        <p>
+                            <a href="#">Pull data from Finastra</a>
+                        </p>
+                    </div>
+                </>
+            ) : (
+                <>
+                    <DataGrid
+                        columns={columns}
+                        rows={grid1}
+                        onRowsChange={onRowsChangeOperatingIncome}
+                        enableCellSelect={true}
+                    />
+                    <Button
+                        onClick={() => {
+                            addingRow1()
+                        }}
+                    >
+                        Add a New Row!
+                    </Button>
+                    <DataGrid
+                        columns={columns}
+                        rows={grid2}
+                        onRowsChange={onRowsChangeCostGoodsSold}
+                        enableCellSelect={true}
+                    />
+                    <Button
+                        onClick={() => {
+                            addingRow2()
+                        }}
+                    >
+                        Add a New Row!
+                    </Button>
+                    <DataGrid
+                        columns={columns}
+                        rows={grid3}
+                        onRowsChange={onRowsChangeOperatingCost}
+                        enableCellSelect={true}
+                    />
+                    <Button
+                        onClick={() => {
+                            addingRow3()
+                        }}
+                    >
+                        Add a New Row!
+                    </Button>
+                </>
+            )}
+        </>
     )
 }
 

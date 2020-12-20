@@ -6,7 +6,7 @@ import { Dashboard, Predictions, Loans, Bank } from './tabs'
 function Home() {
     return (
         <div className="container">
-            <Nav className="justify-content-center nav-pills">
+            {/*<Nav className="justify-content-center nav-pills">
                 <li className="nav-item">
                     <NavLink
                         className="nav-link"
@@ -44,7 +44,7 @@ function Home() {
                         Loans Info
                     </NavLink>
                 </li>
-            </Nav>
+            </Nav>*/}
             <Switch>
                 <Route exact path="/">
                     <Dashboard />
