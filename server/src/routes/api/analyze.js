@@ -30,11 +30,11 @@ router.post('/', async (req, res, next) => {
         }
         //avoid linear dependence
         for (let i = 0; i < 12; i++) {
-            if(costs[i] === 0 || isNaN(revs[i])){
-                costs[i] = i
+            if(costs[i] === 0 || isNaN(costs[i])){
+                costs[i] = 12-i
             }
             if(revs[i] === 0 || isNaN(revs[i])){
-                revs[i] = i * i
+                revs[i] = (12-i) * (12-i)/2
             }
         }
         let lin_reg_input = { costs: costs, revs: revs }

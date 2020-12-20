@@ -105,6 +105,7 @@ function SliderModal(props) {
                                     onChange={(e, value) =>
                                         props.onChange(value, i)
                                     }
+                                    valueLabelDisplay="auto"
                                     marks={marks}
                                     step={10}
                                 />

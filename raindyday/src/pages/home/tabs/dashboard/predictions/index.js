@@ -11,21 +11,6 @@ function Predictions(props) {
     // if not loading data inside component, then turn these into props instead
     const [isLoading, setIsLoading] = useState(false)
 
-    const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ]
-
 
 
     if (!props.show)
@@ -41,12 +26,12 @@ function Predictions(props) {
             </div>
         )
     return (
-        <div style={{height: "500px"}}>
+        <div style={{height: "400px"}}>
             <div>{props.title}</div>
         <ResponsiveBar
             data={props.data}
             keys={['revenue', 'cost', 'profit']}
-            indexBy={'revenue'}
+            indexBy={'month'}
             margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
             padding={0.3}
             groupMode="grouped"
@@ -103,7 +88,7 @@ function Predictions(props) {
             }}
             legends={[
                 {
-                    dataFrom: months,
+                    
                     anchor: 'bottom-right',
                     direction: 'column',
                     justify: false,

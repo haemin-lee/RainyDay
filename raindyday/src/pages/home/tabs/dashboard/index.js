@@ -219,18 +219,18 @@ function Dashboard() {
 
         let analysisData = JSON.parse(analysis_Data)
         const months = [
-            'January',
-            'February',
-            'March',
-            'April',
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
             'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec',
         ]
         let num_months = analysisData.revenues.length
         let old_num_months = analysisData.past_revs.length
@@ -471,7 +471,7 @@ function Dashboard() {
                             // TODO: receive finastra financial data
                             setBankData(bank)
                             penny = bank
-                            curr_id = "11"
+                            curr_id = ids[i]
                             setShowAccountModal(false)
                             setDisplayGraphs(true)
                             reloadData()
@@ -498,12 +498,27 @@ function Dashboard() {
                     {/* render grids */}
                     <div className="row">
                         <div className="col-6">
+                        <div className="row">
+                                <div className="col-11">
+                                    <h3>Dashboard</h3>
+                                </div>
+                                </div>
                             {data.length ? (
                                 <>
                                     {data.map((grid, i) => {
                                         if (!isApi)
                                             return (
                                                 <>
+                                                    
+                                                        <svg 
+                                                        className="float-right"
+                                                        onClick={() => {
+                                                            addingRow(i)
+                                                        }}
+                                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                                        <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                                        </svg>
                                                     <DataGrid
                                                         columns={columns}
                                                         rows={grid}
@@ -517,13 +532,7 @@ function Dashboard() {
                                                         }
                                                         enableCellSelect={true}
                                                     />
-                                                    <Button
-                                                        onClick={() => {
-                                                            addingRow(i)
-                                                        }}
-                                                    >
-                                                        Add a New Row
-                                                    </Button>
+                                                    
                                                 </>
                                             )
                                         return <Account data={grid} />
@@ -536,7 +545,7 @@ function Dashboard() {
                         <div className="col-6">
                             <div className="row">
                                 <div className="col-11">
-                                    <h3>Showing Predictions for placeholder</h3>
+                                    <h3>Showing Predictions</h3>
                                 </div>
                                 <div className="col-1">
                                     {/* TODO: make slider icon css prettier/larger */}
