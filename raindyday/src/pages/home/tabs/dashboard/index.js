@@ -1,7 +1,7 @@
 import DataGrid from 'react-data-grid'
 import '../../../../datagrid_style.css'
 import { TextEditor } from 'react-data-grid'
-import { useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import get_client from '../../../../api/finastra'
 import readXlsxFile from 'read-excel-file'
 import { useDropzone } from 'react-dropzone'
@@ -9,6 +9,7 @@ import { useStore } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import Loader from 'react-loader-spinner'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
+import { AccountModal, SliderModal } from './modal'
 import Prediction from './predictions'
 
 class genericInfo {
@@ -151,10 +152,20 @@ function Dashboard() {
 
     const user = store.getState().user
 
+    let months = []
+    for (let i = 0; i < 12; ++i) {
+        months.push(0)
+    }
+
     const [isImported, setIsImported] = useState(false)
     const [isApi, setIsApi] = useState(false)
+    const [showAccountModal, setShowAccountModal] = useState(false)
+    const [showSliderModal, setShowSliderModal] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState([])
+    const [bankAccounts, setBankAccounts] = useState([])
+    const [bankData, setBankData] = useState([])
+    const [sliderValues, setSliderValues] = useState(months)
 
     function summation(someObj) {
         var object = someObj
@@ -240,6 +251,7 @@ function Dashboard() {
         setData(grids)
         setIsImported(true)
         setIsLoading(false)
+        setShowAccountModal(true)
     }, [])
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -253,8 +265,9 @@ function Dashboard() {
         setData(grids)
     }
 
-    async function get_data() {
-        setIsLoading(true)
+    async function get_data(get_bank_accounts = false) {
+        if (!get_bank_accounts) setIsLoading(true)
+
         const options = {
             accountContext: 'VIEW-ACCOUNT',
         }
@@ -272,11 +285,19 @@ function Dashboard() {
             obj.push(info.data)
         }
 
-        setData(obj)
-        setIsApi(true)
-        setIsImported(true)
+        if (get_bank_accounts) setBankAccounts(obj)
+        else {
+            setData(obj)
+            setIsApi(true)
+            setIsImported(true)
+        }
         setIsLoading(false)
     }
+
+    useEffect(() => {
+        get_data(true)
+        console.log('yay')
+    }, [])
 
     // load for max 12s
     if (isLoading)
@@ -337,46 +358,122 @@ function Dashboard() {
                         </p>
                     </div>
                 </>
-            ) : !isApi ? (
+            ) : (
                 <>
+                    <AccountModal
+                        accounts={bankAccounts}
+                        show={showAccountModal}
+                        onHide={() => {
+                            setShowAccountModal(false)
+                        }}
+                        onClick={(i, bank) => {
+                            // TODO: receive finastra financial data
+                            setBankData(bank)
+                            setShowAccountModal(false)
+                        }}
+                    />
+
+                    <SliderModal
+                        values={sliderValues}
+                        show={showSliderModal}
+                        onHide={() => {
+                            setShowSliderModal(false)
+                        }}
+                        onChange={(value, i) => {
+                            let sliderVals = [...sliderValues]
+                            sliderVals[i] = value
+                            setSliderValues(sliderVals)
+                        }}
+                        onSubmit={() => {
+                            // TODO: recalculate vaccine level graph thingy
+                            setShowSliderModal(false)
+                        }}
+                    />
                     {/* render grids */}
                     <div className="row">
                         <div className="col-6">
-                            {data.map((grid, i) => {
-                                return (
-                                    <>
-                                        <DataGrid
-                                            columns={columns}
-                                            rows={grid}
-                                            onRowsChange={(updatedRows) =>
-                                                onRowsChange(i, updatedRows)
-                                            }
-                                            enableCellSelect={true}
-                                        />
-                                        <Button
-                                            onClick={() => {
-                                                addingRow(i)
-                                            }}
-                                        >
-                                            Add a New Row!
-                                        </Button>
-                                    </>
-                                )
-                            })}
+                            {data.length ? (
+                                <>
+                                    {data.map((grid, i) => {
+                                        if (!isApi)
+                                            return (
+                                                <>
+                                                    <DataGrid
+                                                        columns={columns}
+                                                        rows={grid}
+                                                        onRowsChange={(
+                                                            updatedRows
+                                                        ) =>
+                                                            onRowsChange(
+                                                                i,
+                                                                updatedRows
+                                                            )
+                                                        }
+                                                        enableCellSelect={true}
+                                                    />
+                                                    <Button
+                                                        onClick={() => {
+                                                            addingRow(i)
+                                                        }}
+                                                    >
+                                                        Add a New Row
+                                                    </Button>
+                                                </>
+                                            )
+                                        return <Account data={grid} />
+                                    })}
+                                </>
+                            ) : (
+                                <p>No data</p>
+                            )}
                         </div>
-                        {/* graphs */}
-                        <div className="col-6"></div>
-                    </div>
-                </>
-            ) : (
-                <>
-                    <div className="row">
                         <div className="col-6">
-                            {data.map((grid) => {
-                                return <Account data={grid} />
-                            })}
+                            <div className="row">
+                                <div className="col-11">
+                                    <h3>Showing Predictions for placeholder</h3>
+                                </div>
+                                <div className="col-1">
+                                    {/* TODO: make slider icon css prettier/larger */}
+                                    <svg
+                                        onClick={() => {
+                                            setShowSliderModal(true)
+                                        }}
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        class="bi bi-sliders"
+                                        viewBox="0 0 16 16"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"
+                                        />
+                                    </svg>
+                                    {/*cash stack*/}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        class="bi bi-cash-stack"
+                                        viewBox="0 0 16 16"
+                                        onClick={() => {
+                                            setShowAccountModal(true)
+                                        }}
+                                    >
+                                        <path d="M14 3H1a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1h-1z" />
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M15 5H1v8h14V5zM1 4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H1z"
+                                        />
+                                        <path d="M13 5a2 2 0 0 0 2 2V5h-2zM3 5a2 2 0 0 1-2 2V5h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 13a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            {/* TODO: graphs */}
+                            {/*<Prediction data={[]} />*/}
                         </div>
-                        <div className="col-6"></div>
                     </div>
                 </>
             )}
