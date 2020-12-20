@@ -54,7 +54,7 @@ function TopNav() {
                                 return
                             }}
                         >
-                            Logout
+                            Logout {user.firstName}
                         </Nav.Link>
                     </Nav>
                 )}
