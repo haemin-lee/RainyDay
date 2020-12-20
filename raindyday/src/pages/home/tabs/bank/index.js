@@ -198,27 +198,9 @@ function Account(props) {
     )
 }
 
-
 // Prob better way to do prop mapping
 function Bank() {
-<<<<<<< HEAD
-    const [data, setData] = useState([]);
-    const [grid1, setGrid1] = useState(rowsOperatingIncome);
-    const [grid2, setGrid2] = useState(rowsCostOfGoodsSold);
-    const [grid3, setGrid3] = useState(rowsOperatingCost);
-
-    let onRowsChange1 = ( updatedRows ) => {  
-        setGrid1(updatedRows);
-    };
-    let onRowsChange2 = ( updatedRows ) => {  
-        setGrid2(updatedRows);
-    };
-    let onRowsChange3 = ( updatedRows ) => {  
-        setGrid3(updatedRows);
-    };
-=======
     const [data, setData] = useState([])
->>>>>>> c864eeaefab4efe6fcbe512c04bf8239b3fbd57f
 
     useEffect(() => {
         // test_api()
@@ -247,11 +229,6 @@ function Bank() {
         }
     }, [])
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> c864eeaefab4efe6fcbe512c04bf8239b3fbd57f
     return (
         <div className="container">
             {TEST.map((data) => {
