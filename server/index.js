@@ -24,7 +24,7 @@ const proxy = http_proxy.createProxyServer({
 proxy.on('proxyReq', (proxyReq, req) => {
     try {
         proxyReq.headers = req.headers
-        proxyReq.write(JSON.stringify(req.body))
+        if (req.body) proxyReq.write(JSON.stringify(req.body))
     } catch (e) {
         console.log(e)
     }
