@@ -30,6 +30,16 @@ proxy.on('proxyReq', (proxyReq, req) => {
     }
 })
 
+app.use('/proxy', async (req, res, next) => {
+    try {
+        proxy.web(req, res, {
+            target: 'https://api.fusionfabric.cloud',
+        })
+    } catch (e) {
+        next(e)
+    }
+})
+
 app.use(express.json())
 
 // set up mongodb
@@ -44,16 +54,6 @@ app.use('/oauth', oauth)
 
 // Run all routes through /api to avoid React pathing conflicts
 app.use('/api', api)
-
-app.use('/proxy', async (req, res, next) => {
-    try {
-        proxy.web(req, res, {
-            target: 'https://api.fusionfabric.cloud',
-        })
-    } catch (e) {
-        next(e)
-    }
-})
 
 if (config.NODE_ENV === 'production') {
     // Serve React production bundle
