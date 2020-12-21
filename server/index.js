@@ -22,9 +22,12 @@ const proxy = http_proxy.createProxyServer({
 
 // forward request bc finastra doesn't know how oauth works
 proxy.on('proxyReq', (proxyReq, req) => {
-    //console.log(req.headers)
-    proxyReq.headers = req.headers
-    proxyReq.write(JSON.stringify(req.body))
+    try {
+        proxyReq.headers = req.headers
+        proxyReq.write(JSON.stringify(req.body))
+    } catch (e) {
+        console.log(e)
+    }
 })
 
 app.use(express.json())
@@ -42,19 +45,14 @@ app.use('/oauth', oauth)
 // Run all routes through /api to avoid React pathing conflicts
 app.use('/api', api)
 
-app.use('/proxy', (req, res) => {
-    proxy.web(
-        req,
-        res,
-        {
+app.use('/proxy', async (req, res, next) => {
+    try {
+        proxy.web(req, res, {
             target: 'https://api.fusionfabric.cloud',
-        },
-        (err) => {
-            console.log(err)
-            res.writeHead(500)
-            res.end(err)
-        }
-    )
+        })
+    } catch (e) {
+        next(e)
+    }
 })
 
 if (config.NODE_ENV === 'production') {
